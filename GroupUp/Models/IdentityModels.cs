@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -9,6 +10,8 @@ namespace GroupUp.Models
     // ApplicationUser sınıfınıza daha fazla özellik ekleyerek kullanıcıya profil verileri ekleyebilirsiniz. Daha fazla bilgi için lütfen https://go.microsoft.com/fwlink/?LinkID=317594 adresini ziyaret edin.
     public class ApplicationUser : IdentityUser
     {
+        [Required]
+        public User User { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // authenticationType özelliğinin CookieAuthenticationOptions.AuthenticationType içinde tanımlanmış olanla eşleşmesi gerektiğini unutmayın
@@ -20,6 +23,8 @@ namespace GroupUp.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        // Is not named 'Users' because class IdentityDbContext has a DbSet with the given name
+        public DbSet<User> UserInfo { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
@@ -28,6 +33,14 @@ namespace GroupUp.Models
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<User>()
+                .HasRequired(u => u.AspNetIdentity)
+                .WithRequiredPrincipal(a => a.User);
         }
     }
 }
