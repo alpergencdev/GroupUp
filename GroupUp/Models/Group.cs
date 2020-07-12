@@ -18,6 +18,7 @@ namespace GroupUp.Models
 
         [Required] public User Creator { get; set; }
 
+        [Range(2, 50)]
         [Required] public int MaxUserCapacity { get; set; }
 
         [Required] public string City { get; set; }

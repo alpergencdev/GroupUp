@@ -1,0 +1,26 @@
+﻿@model GroupUp.ViewModels.GroupViewModel
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Group Details</h2>
+
+@if (Model.Group == null)
+{
+    <p>The group with the given ID does not exist.</p>
+}
+else
+{
+    <p>Group Title: @Model.Group.Title</p>
+    <p>Group Description: @Model.Group.Description</p>
+    <p>Group Members:</p>
+    <ul>
+        @foreach (var usr in @Model.Group.Members)
+        {
+            <li>
+                @usr.UserId
+            </li>
+        }
+    </ul>
+
+}

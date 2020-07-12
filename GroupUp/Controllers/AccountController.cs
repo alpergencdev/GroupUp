@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -75,7 +76,7 @@ namespace GroupUp.Controllers
 
             // Hesap kilitlenirken oturum açma hataları hesaplanmaz
             // Parola hatalarının hesap kilitlenmesini tetiklemesini sağlmak için değeri shouldLockout: true olarak değiştirin
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -155,7 +156,8 @@ namespace GroupUp.Controllers
                 {
                     ContactInfo = "No contact info specified.",
                     SecurityLevel = 0,
-                    TrustPoints = 0
+                    TrustPoints = 0,
+                    Groups = new List<Group>()
                 };
                 var user = new ApplicationUser
                 {
@@ -164,16 +166,7 @@ namespace GroupUp.Controllers
                     User = userObject
                 };
                 userObject.AspNetIdentity = user;
-                var result = new IdentityResult();
-                try
-                {
-                    result = await UserManager.CreateAsync(user, model.Password);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);

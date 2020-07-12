@@ -23,8 +23,9 @@ namespace GroupUp.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        // Is not named 'Users' because class IdentityDbContext has a DbSet with the given name
-        public DbSet<User> UserInfo { get; set; }
+        public new DbSet<User> Users { get; set; }
+        public DbSet<Group> Groups { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
