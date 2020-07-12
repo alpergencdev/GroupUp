@@ -20,5 +20,8 @@ namespace GroupUp.Models
 
         [Required]
         public ApplicationUser AspNetIdentity { get; set; }
+
+        [Required] 
+        public IList<Group> Groups { get; set; }
     }
 }

@@ -41,6 +41,19 @@ namespace GroupUp.Models
             modelBuilder.Entity<User>()
                 .HasRequired(u => u.AspNetIdentity)
                 .WithRequiredPrincipal(a => a.User);
+
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Groups)
+                .WithMany(g => g.Members)
+                .Map(m
+                    =>
+                    {
+                    m.ToTable("GroupUsers");
+                    m.MapLeftKey("GroupId");
+                    m.MapRightKey("UserId");
+                    });
+            modelBuilder.Entity<Group>()
+                .HasRequired(g => g.Creator);
         }
     }
 }
