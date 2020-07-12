@@ -1,4 +1,5 @@
-﻿@model GroupUp.ViewModels.GroupViewModel
+﻿@using GroupUp.Controllers
+@model GroupUp.ViewModels.GroupDetailsViewModel
 @{
     ViewBag.Title = "Details";
 }
@@ -23,8 +24,21 @@ else
         }
     </ul>
 
-    using (@Html.BeginForm("Join", "Groups", new {groupId = Model.Group.GroupId}, FormMethod.Post))
+    <hr/>
+
+    if (Model.Group.Members.Count < Model.Group.MaxUserCapacity
+        && !Model.Group.Members.Contains(Model.User)
+        && Model.Group != null && Model.User != null)
     {
-        <button type="submit" class="btn btn-primary">Join Group</button>
+        using (@Html.BeginForm("Join", "Groups", new {groupId = Model.Group.GroupId}, FormMethod.Post))
+        {
+            <button class="btn btn-primary">Join Group</button>
+        }
+        
     }
+    else
+    {
+        <p>You cannot join this group.</p>
+    }
+
 }

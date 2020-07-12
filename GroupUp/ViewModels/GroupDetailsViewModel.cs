@@ -6,8 +6,10 @@ using GroupUp.Models;
 
 namespace GroupUp.ViewModels
 {
-    public class GroupViewModel
+    public class GroupDetailsViewModel
     {
         public Group Group { get; set; }
+
+        public User User { get; set; }
     }
 }

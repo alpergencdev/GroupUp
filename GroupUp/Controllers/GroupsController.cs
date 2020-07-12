@@ -28,19 +28,24 @@ namespace GroupUp.Controllers
             return View();
         }
 
+        [Authorize]
         public ActionResult Details(int id)
         {
-            GroupViewModel gvm = new GroupViewModel()
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            GroupDetailsViewModel gvm = new GroupDetailsViewModel()
             {
-                Group = _context.Groups.Include(g => g.Members).SingleOrDefault(g => g.GroupId == id)
+                Group = _context.Groups.Include(g => g.Members).SingleOrDefault(g => g.GroupId == id),
+                User = currentUser
             };
             return View(gvm);
         }
+
         [Authorize]
         public ActionResult Create()
         {
             
-            var gvm = new GroupViewModel()
+            var gvm = new GroupDetailsViewModel()
             {
                 Group = new Group()
             };
@@ -48,7 +53,7 @@ namespace GroupUp.Controllers
         }
 
         [HttpPost]
-        public ActionResult Save(GroupViewModel gvm)
+        public ActionResult Save(GroupDetailsViewModel gvm)
         {
             string aspUserId = User.Identity.GetUserId();
             var user = _context.Users.Include(u => u.AspNetIdentity).SingleOrDefault(u => u.AspNetIdentity.Id == aspUserId);
@@ -150,7 +155,34 @@ namespace GroupUp.Controllers
             targetGroup.Members.Add(currentUser);
             currentUser.Groups.Add(targetGroup);
             _context.SaveChanges();
-            return RedirectToAction("Index", "Groups");
+            return RedirectToAction("Details", "Groups", new { id = groupId});
+        }
+
+        [Authorize]
+        public bool CanUserJoin(int groupId)
+        {
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.Groups)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+
+            var targetGroup = _context.Groups.Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
+
+            if (targetGroup == null)
+            {
+                return false;
+            }
+
+            if (currentUser == null)
+            {
+                return false;
+            }
+
+            if (targetGroup.Members.Contains(currentUser))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
