@@ -100,5 +100,20 @@ namespace GroupUp.Controllers
             _context.SaveChanges();
             return View("Index");
         }
+
+        public ActionResult Requests()
+        {
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            var groupsToShow = _context.Groups.Include(g => g.Members)
+                .Where(g => !g.Members.Contains(currentUser) 
+                            && g.Members.Count < g.MaxUserCapacity).ToList(); // && CORRESPONDING TO USER'S LOCATION
+            var viewModel = new GroupRequestsViewModel()
+            {
+                Groups = groupsToShow,
+                User = currentUser
+            };
+            return View(viewModel);
+        }
     }
 }
