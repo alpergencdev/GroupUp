@@ -25,6 +25,7 @@ namespace GroupUp.Models
     {
         public new DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
+        
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
@@ -43,13 +44,13 @@ namespace GroupUp.Models
                 .HasRequired(u => u.AspNetIdentity)
                 .WithRequiredPrincipal(a => a.User);
 
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Groups)
-                .WithMany(g => g.Members)
+            modelBuilder.Entity<Group>()
+                .HasMany(g => g.Members)
+                .WithMany(u => u.Groups)
                 .Map(m
                     =>
                     {
-                    m.ToTable("GroupUsers");
+                    m.ToTable("UserGroups");
                     m.MapLeftKey("GroupId");
                     m.MapRightKey("UserId");
                     });

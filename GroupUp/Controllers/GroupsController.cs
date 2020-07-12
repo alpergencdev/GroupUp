@@ -87,7 +87,7 @@ namespace GroupUp.Controllers
                         };
                         _context.Groups.Add(group);
                         _context.SaveChanges();
-                        return View("Details", gvm.Group.GroupId);
+                        return View("Index");
                     }
                     catch (ValidationException)
                     {
@@ -98,7 +98,7 @@ namespace GroupUp.Controllers
 
             _context.Groups.Add(gvm.Group);
             _context.SaveChanges();
-            return View("Details", gvm.Group.GroupId);
+            return View("Index");
         }
     }
 }
