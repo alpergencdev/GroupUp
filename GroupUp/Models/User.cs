@@ -10,7 +10,6 @@ namespace GroupUp.Models
     {
         public int UserId { get; set; }
 
-        [Required]
         public string ContactInfo { get; set; }
 
         [Required]

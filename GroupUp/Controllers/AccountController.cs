@@ -151,8 +151,29 @@ namespace GroupUp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
+                var userObject = new User()
+                {
+                    ContactInfo = "No contact info specified.",
+                    SecurityLevel = 0,
+                    TrustPoints = 0
+                };
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email, 
+                    Email = model.Email,
+                    User = userObject
+                };
+                userObject.AspNetIdentity = user;
+                var result = new IdentityResult();
+                try
+                {
+                    result = await UserManager.CreateAsync(user, model.Password);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
