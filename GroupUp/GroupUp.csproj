@@ -184,6 +184,10 @@
     <Compile Include="Migrations\202007121041141_AddUserObject.Designer.cs">
       <DependentUpon>202007121041141_AddUserObject.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007121053495_MakeCntInfoNonRequired.cs" />
+    <Compile Include="Migrations\202007121053495_MakeCntInfoNonRequired.Designer.cs">
+      <DependentUpon>202007121053495_MakeCntInfoNonRequired.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -270,6 +274,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202007121041141_AddUserObject.resx">
       <DependentUpon>202007121041141_AddUserObject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007121053495_MakeCntInfoNonRequired.resx">
+      <DependentUpon>202007121053495_MakeCntInfoNonRequired.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
