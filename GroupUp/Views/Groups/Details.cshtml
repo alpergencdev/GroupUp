@@ -23,4 +23,8 @@ else
         }
     </ul>
 
+    using (@Html.BeginForm("Join", "Groups", new {groupId = Model.Group.GroupId}, FormMethod.Post))
+    {
+        <button type="submit" class="btn btn-primary">Join Group</button>
+    }
 }

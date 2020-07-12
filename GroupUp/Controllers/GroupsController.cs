@@ -106,14 +106,51 @@ namespace GroupUp.Controllers
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             var groupsToShow = _context.Groups.Include(g => g.Members)
-                .Where(g => !g.Members.Contains(currentUser) 
-                            && g.Members.Count < g.MaxUserCapacity).ToList(); // && CORRESPONDING TO USER'S LOCATION
+                .Where(g => g.Members.Count < g.MaxUserCapacity).ToList(); // && CORRESPONDING TO USER'S LOCATION
             var viewModel = new GroupRequestsViewModel()
             {
                 Groups = groupsToShow,
                 User = currentUser
             };
             return View(viewModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Join(int groupId)
+        {
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.Groups)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+
+            var targetGroup = _context.Groups.Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
+
+            if (targetGroup == null)
+            {
+                return Content("There is no group with the given ID.");
+            }
+
+            if (currentUser == null)
+            {
+                return Content("Please log in.");
+            }
+
+            if (targetGroup.Members.Contains(currentUser))
+            {
+                return Content("User is already a part of this group.");
+            }
+
+            if (targetGroup.Members.Count >= targetGroup.MaxUserCapacity)
+            {
+                return Content("Group is full.");
+            }
+
+            // If no erroneous conditions were satisfied...
+
+            targetGroup.Members.Add(currentUser);
+            currentUser.Groups.Add(targetGroup);
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Groups");
         }
     }
 }
