@@ -10,37 +10,37 @@
 {
     @Html.ValidationSummary()
     <div class="form-group">
-        @Html.LabelFor(m => m.Group.Title);
+        @Html.LabelFor(m => m.Group.Title)
         @Html.TextBoxFor(m => m.Group.Title, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.Group.Title)
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Group.Description);
+        @Html.LabelFor(m => m.Group.Description)
         @Html.TextBoxFor(m => m.Group.Description, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.Group.Description)
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Group.MaxUserCapacity);
+        @Html.LabelFor(m => m.Group.MaxUserCapacity)
         @Html.TextBoxFor(m => m.Group.MaxUserCapacity, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.Group.MaxUserCapacity)
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Group.City);
+        @Html.LabelFor(m => m.Group.City)
         @Html.TextBoxFor(m => m.Group.City, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.Group.City)
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Group.Country);
+        @Html.LabelFor(m => m.Group.Country)
         @Html.TextBoxFor(m => m.Group.Country, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.Group.Country)
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Group.Continent);
+        @Html.LabelFor(m => m.Group.Continent)
         @Html.TextBoxFor(m => m.Group.Continent, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.Group.Continent)
     </div>
