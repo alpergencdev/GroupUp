@@ -32,7 +32,7 @@ namespace GroupUp.Controllers
         {
             GroupViewModel gvm = new GroupViewModel()
             {
-                Group = _context.Groups.Include(g => g.Members).SingleOrDefault()
+                Group = _context.Groups.Include(g => g.Members).SingleOrDefault(g => g.GroupId == id)
             };
             return View(gvm);
         }
@@ -42,7 +42,7 @@ namespace GroupUp.Controllers
             
             var gvm = new GroupViewModel()
             {
-                Group = new Group(),
+                Group = new Group()
             };
             return View(gvm);
         }
@@ -57,17 +57,17 @@ namespace GroupUp.Controllers
             gvm.Group.Members.Add(user);
             if (!ModelState.IsValid)
             {
-                bool AllInputsAreValid = true;
+                bool allInputsAreValid = true;
                 for(int i = 0; i < ModelState.Values.Count - 2; i++)
                 {
                     if (ModelState.Values.ElementAt(i).Errors.Count > 0)
                     {
-                        AllInputsAreValid = false;
+                        allInputsAreValid = false;
                         break;
                     }
                 }
 
-                if (AllInputsAreValid)
+                if (allInputsAreValid)
                 {
                     try
                     {
