@@ -1,0 +1,50 @@
+﻿@model GroupUp.ViewModels.UserGroupsViewModel
+@{
+    ViewBag.Title = "UserGroups";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Joined Groups</h2>
+@{
+    if (Model.JoinedGroups.Count <= 0)
+    {
+        <p>You have not joined any groups yet.</p>
+    }
+    else
+    {
+        foreach (var group in Model.JoinedGroups)
+        {
+            <hr />
+            <div>
+                <h3> @group.Title</h3>
+                <p> @(group.Description.Substring(0, 10) + ((group.Description.Length <= 10) ? null : "..."))</p>
+                <p> @group.Members.Count users in this group</p>
+                <p> @(group.MaxUserCapacity - group.Members.Count) free spots in this group</p>
+                @Html.ActionLink("View Group →", "Details", "Groups", new { id = group.GroupId }, new { @class = "btn btn-primary" })
+            </div>
+        }
+    }
+}
+
+<h2>Created Groups</h2>
+@{
+    if (Model.CreatedGroups.Count <= 0)
+    {
+        <p>You have not created any groups yet.</p>
+    }
+    else
+    {
+        foreach (var group in Model.CreatedGroups)
+        {
+            <hr />
+            <div>
+                <h3> @group.Title</h3>
+                <p> @(group.Description.Substring(0, 10) + ((group.Description.Length <= 10) ? null : "..."))</p>
+                <p> @group.Members.Count users in this group</p>
+                <p> @(group.MaxUserCapacity - group.Members.Count) free spots in this group</p>
+                @Html.ActionLink("View Group →", "Details", "Groups", new { id = group.GroupId }, new { @class = "btn btn-primary" })
+            </div>
+        }
+    }
+}
+

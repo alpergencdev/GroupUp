@@ -6,12 +6,29 @@
 
 <h2>Group Requests</h2>
 
-@if (Model.Groups.Count == 0)
-{
-    <p>There are currently no groups that you can join.</p>
-}
-else
-{
 
+@{
+    bool noGroupsShown = true;
+    foreach (var group in Model.Groups)
+    {
+        if (!group.Members.Contains(Model.User) && group.Creator != Model.User)
+        {
+            noGroupsShown = false;
+            <hr/>
+            <div style="border: 5px solid black">
+                <h3> @group.Title</h3>
+                <p> @(group.Description.Substring(0, 10) + ((group.Description.Length <= 10) ? null : "..."))</p>
+                <p> @group.Members.Count users in this group</p>
+                <p> @(group.MaxUserCapacity - group.Members.Count) free spots in this group</p>
+                @Html.ActionLink("View Group →", "Details", "Groups", new { id = group.GroupId}, new { @class="btn btn-primary"})
+
+            </div>
+        }
+    }
+
+    if (noGroupsShown)
+    {
+        <p>There are currently no groups you can join.</p>
+    }
 }
 

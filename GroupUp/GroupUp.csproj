@@ -211,6 +211,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\GroupRequestsViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
+    <Compile Include="ViewModels\UserGroupsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -275,6 +276,7 @@
     <Content Include="Views\Groups\Create.cshtml" />
     <Content Include="Views\Shared\_Navbar.cshtml" />
     <Content Include="Views\Groups\Requests.cshtml" />
+    <Content Include="Views\Groups\UserGroups.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

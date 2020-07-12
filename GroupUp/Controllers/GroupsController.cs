@@ -106,6 +106,7 @@ namespace GroupUp.Controllers
             return View("Index");
         }
 
+        [Authorize]
         public ActionResult Requests()
         {
             var aspNetId = User.Identity.GetUserId();
@@ -184,5 +185,29 @@ namespace GroupUp.Controllers
 
             return true;
         }
+
+        [Authorize]
+        public ActionResult UserGroups()
+        {
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.Groups)
+                .SingleOrDefault( u => u.AspNetIdentity.Id == aspNetId);
+
+            var createdGroups = _context.Groups.Include(g => g.Members)
+                .Where(g => g.Creator.UserId == currentUser.UserId).ToList();
+
+            var joinedGroups = _context.Groups.Include(g => g.Members).Include(g => g.Creator).ToList();
+            joinedGroups.RemoveAll(g => !g.Members.Contains(currentUser) || g.Creator.UserId == currentUser.UserId);
+
+            var viewModel = new UserGroupsViewModel()
+            {
+                CreatedGroups = createdGroups.ToList(),
+                JoinedGroups = joinedGroups.ToList()
+            };
+
+            return View(viewModel);
+        }
     }
+
+   
 }
