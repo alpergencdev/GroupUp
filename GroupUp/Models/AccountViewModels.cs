@@ -79,6 +79,10 @@ namespace GroupUp.Models
         [Display(Name = "Parolayı onaylayın")]
         [Compare("Password", ErrorMessage = "Parola ve onay parolası aynı değil.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "Kullanıcı Adı")]
+        public string Username { get; set; }
     }
 
     public class ResetPasswordViewModel

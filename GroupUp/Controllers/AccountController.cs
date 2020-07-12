@@ -159,7 +159,7 @@ namespace GroupUp.Controllers
                 };
                 var user = new ApplicationUser
                 {
-                    UserName = model.Email, 
+                    UserName = model.Username, 
                     Email = model.Email,
                     User = userObject
                 };
