@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using GroupUp.Models;
+using GroupUp.Models.LocationModels;
 using GroupUp.ViewModels;
-using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -15,13 +13,12 @@ namespace GroupUp.Controllers
 {
     public class GroupsController : Controller
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         protected UserManager<ApplicationUser> UserManager { get; set; }
         public GroupsController()
         {
             _context = new ApplicationDbContext();
             UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._context));
-            Session["Location"] = null;
         }
         // GET: Groups
         public ActionResult Index()
@@ -59,8 +56,7 @@ namespace GroupUp.Controllers
             string aspUserId = User.Identity.GetUserId();
             var user = _context.Users.Include(u => u.AspNetIdentity).SingleOrDefault(u => u.AspNetIdentity.Id == aspUserId);
             gvm.Group.Creator = user;
-            gvm.Group.Members = new List<User>();
-            gvm.Group.Members.Add(user);
+            gvm.Group.Members = new List<User> {user};
             if (!ModelState.IsValid)
             {
                 bool allInputsAreValid = true;
@@ -110,7 +106,12 @@ namespace GroupUp.Controllers
         [Authorize]
         public ActionResult Requests()
         {
-            var aspNetId = User.Identity.GetUserId();
+            if (Session["Location"] == null)
+            {
+                return RedirectToAction("GetLocation");
+            }
+
+        var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             var groupsToShow = _context.Groups.Include(g => g.Members)
                 .Where(g => g.Members.Count < g.MaxUserCapacity).ToList(); // && CORRESPONDING TO USER'S LOCATION
@@ -198,7 +199,7 @@ namespace GroupUp.Controllers
                 .Where(g => g.Creator.UserId == currentUser.UserId).ToList();
 
             var joinedGroups = _context.Groups.Include(g => g.Members).Include(g => g.Creator).ToList();
-            joinedGroups.RemoveAll(g => !g.Members.Contains(currentUser) || g.Creator.UserId == currentUser.UserId);
+            joinedGroups.RemoveAll(g => currentUser != null && (!g.Members.Contains(currentUser) || g.Creator.UserId == currentUser.UserId));
 
             var viewModel = new UserGroupsViewModel()
             {
@@ -207,6 +208,40 @@ namespace GroupUp.Controllers
             };
 
             return View(viewModel);
+        }
+
+        public ActionResult GetLocation()
+        {
+            return View();
+        }
+
+        public ActionResult ReadLocation(double lat, double lng, string returnToAction)
+        {
+            var locationProperties = new LocationProperties()
+            {
+                Lat = lat,
+                Lng = lng,
+                City = "-",
+                CountryLongName = "-",
+                CountryShortName = "-",
+                Continent = "-"
+            };
+
+            LocationMethods.ReverseGeocode(lat, lng, ref locationProperties);
+            Session["Location"] = locationProperties;
+            return Content(lat + " " + lng);
+            }
+
+        public ActionResult PrintLocation()
+        {
+            var location = (LocationProperties) Session["Location"];
+
+            if (location == null)
+            {
+                return HttpNotFound();
+            }
+
+            return Content($"Lat: {location.Lat} Lng: {location.Lng} City: {location.City} Country = {location.CountryLongName} Continent = {location.Continent}");
         }
     }
 

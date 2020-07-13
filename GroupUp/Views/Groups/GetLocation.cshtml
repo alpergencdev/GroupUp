@@ -1,0 +1,35 @@
+﻿@Model string
+@{
+    ViewBag.Title = "GetLocation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Retrieving Location...</h2>
+<p>Please wait while we retrieve your location.</p>
+<script>
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(postLocation, error);
+        } else {
+            error();
+        }
+    };
+
+    function postLocation(position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("POST", '@Url.Action("ReadLocation", "Groups")?lat=' + lat + "&lng=" + lng);
+        xmlHttp.send();
+
+    }
+
+    function error()
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("POST", '@Url.Action("ReadLocation", "Groups")?lat=-1&lng=-1');
+        xmlHttp.send();
+    }
+
+    getLocation();
+</script>
