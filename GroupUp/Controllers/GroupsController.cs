@@ -56,7 +56,8 @@ namespace GroupUp.Controllers
             string aspUserId = User.Identity.GetUserId();
             var user = _context.Users.Include(u => u.AspNetIdentity).SingleOrDefault(u => u.AspNetIdentity.Id == aspUserId);
             gvm.Group.Creator = user;
-            gvm.Group.Members = new List<User> {user};
+            gvm.Group.Members = new List<User>();
+            gvm.Group.Members.Add(user);
             if (!ModelState.IsValid)
             {
                 bool allInputsAreValid = true;
@@ -108,10 +109,10 @@ namespace GroupUp.Controllers
         {
             if (Session["Location"] == null)
             {
-                return RedirectToAction("GetLocation");
+                return RedirectToAction("GetLocation", new {returnAction = "Requests"});
             }
 
-        var aspNetId = User.Identity.GetUserId();
+            var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             var groupsToShow = _context.Groups.Include(g => g.Members)
                 .Where(g => g.Members.Count < g.MaxUserCapacity).ToList(); // && CORRESPONDING TO USER'S LOCATION
@@ -210,9 +211,13 @@ namespace GroupUp.Controllers
             return View(viewModel);
         }
 
-        public ActionResult GetLocation()
+        public ActionResult GetLocation(string returnAction)
         {
-            return View();
+            var viewModel = new GetLocationViewModel()
+            {
+                ReturnAction = returnAction
+            };
+            return View(viewModel);
         }
 
         public ActionResult ReadLocation(double lat, double lng, string returnToAction)

@@ -355,6 +355,7 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\GetLocationViewModel.cs" />
     <Compile Include="ViewModels\GroupRequestsViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />

@@ -1,11 +1,12 @@
-﻿@Model string
+﻿@model GroupUp.ViewModels.GetLocationViewModel
 @{
     ViewBag.Title = "GetLocation";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Retrieving Location...</h2>
-<p>Please wait while we retrieve your location.</p>
+<p>Please wait while we retrieve and process your location. You will be redirected to your previous page.</p>
+@Html.Hidden("RedirectTo", Url.Action(Model.ReturnAction))
 <script>
     function getLocation() {
         if (navigator.geolocation) {
@@ -33,3 +34,4 @@
 
     getLocation();
 </script>
+<meta http-equiv="refresh" content="5; url=@Url.Action(Model.ReturnAction)" />
