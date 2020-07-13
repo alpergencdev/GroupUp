@@ -109,6 +109,7 @@ namespace GroupUp.Controllers
         {
             if (Session["Location"] == null)
             {
+                Session["GetLocationFlag"] = true;
                 return RedirectToAction("GetLocation", new {returnAction = "Requests"});
             }
 
@@ -213,11 +214,17 @@ namespace GroupUp.Controllers
 
         public ActionResult GetLocation(string returnAction)
         {
-            var viewModel = new GetLocationViewModel()
+            if (Session["GetLocationFlag"] != null && (bool)Session["GetLocationFlag"])
             {
-                ReturnAction = returnAction
-            };
-            return View(viewModel);
+                var viewModel = new GetLocationViewModel()
+                {
+                    ReturnAction = returnAction
+                };
+                Session["GetLocationFlag"] = false;
+                return View(viewModel);
+            }
+
+            return HttpNotFound();
         }
 
         public ActionResult ReadLocation(double lat, double lng, string returnToAction)
