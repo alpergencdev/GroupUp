@@ -21,6 +21,7 @@ namespace GroupUp.Controllers
         {
             _context = new ApplicationDbContext();
             UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._context));
+            Session["Location"] = null;
         }
         // GET: Groups
         public ActionResult Index()
