@@ -11,13 +11,14 @@
     bool noGroupsShown = true;
     foreach (var group in Model.Groups)
     {
-        if (!group.Members.Contains(Model.User) && group.Creator != Model.User)
+        if (!group.Members.Contains(Model.User) && group.Creator != Model.User 
+            && Model.Location.IsMatchingLocation(group.City, group.Country, group.Continent))
         {
             noGroupsShown = false;
             <hr/>
             <div style="border: 5px solid black">
                 <h3> @group.Title</h3>
-                <p> @(group.Description.Substring(0, 10) + ((group.Description.Length <= 10) ? null : "..."))</p>
+                <p> @(group.Description)</p>
                 <p> @group.Members.Count users in this group</p>
                 <p> @(group.MaxUserCapacity - group.Members.Count) free spots in this group</p>
                 @Html.ActionLink("View Group →", "Details", "Groups", new { id = group.GroupId}, new { @class="btn btn-primary"})

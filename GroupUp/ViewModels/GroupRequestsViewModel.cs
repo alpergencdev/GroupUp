@@ -10,5 +10,6 @@ namespace GroupUp.ViewModels
     {
         public IList<Group> Groups { get; set; }
         public User User { get; set; }
+        public LocationProperties Location { get; set; }
     }
 }

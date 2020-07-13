@@ -42,10 +42,21 @@ namespace GroupUp.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            
+            if (Session["Location"] == null)
+            {
+                Session["GetLocationFlag"] = true;
+                return RedirectToAction("GetLocation", new { returnAction = "Create" });
+            }
+
+            var locationProperties = (LocationProperties) Session["Location"];
             var gvm = new GroupDetailsViewModel()
             {
                 Group = new Group()
+                {
+                    City = locationProperties.City,
+                    Country = locationProperties.CountryLongName,
+                    Continent = locationProperties.Continent
+                }
             };
             return View(gvm);
         }
@@ -120,7 +131,8 @@ namespace GroupUp.Controllers
             var viewModel = new GroupRequestsViewModel()
             {
                 Groups = groupsToShow,
-                User = currentUser
+                User = currentUser,
+                Location = (LocationProperties) Session["Location"]
             };
             return View(viewModel);
         }

@@ -14,5 +14,22 @@ namespace GroupUp.Models
 
         public double Lat { get; set; }
         public double Lng { get; set; }
+
+        public bool IsMatchingLocation(string city, string country, string continent)
+        {
+            // Condition 1: Both city values and country values match.
+            bool condition1 = city == this.City && country == this.CountryLongName;
+
+            // Condition 2: City value does not matter, country values match.
+            bool condition2 = city == "-" && country == this.CountryLongName;
+
+            // Condition 3: City and country values do not matter, continent values match.
+            bool condition3 = city == "-" && country == "-" && continent == this.Continent;
+
+            // Condition 4: All values do not matter.
+            bool condition4 = city == "-" && country == "-" && continent == "-";
+
+            return condition1 || condition2 || condition3 || condition4;
+        }
     }
 }
