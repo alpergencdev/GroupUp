@@ -19,12 +19,44 @@ else
         @foreach (var usr in @Model.Group.Members)
         {
             <li>
-                @usr.AspNetIdentity.UserName | @Html.ActionLink("View User", "Details", "Users", new {userId = @usr.UserId}, null) | Report User
+                @usr.AspNetIdentity.UserName | @Html.ActionLink("View User", "Details", "Users", new { userId = @usr.UserId }, null) | Report User
             </li>
         }
     </ul>
     <hr />
     <h3>Chat</h3>
-    <div style="height: 500px; border:1px solid #ccc;overflow:auto;">
-    </div>
+    <div style="max-height: 500px; border:1px solid #ccc;overflow:auto;"><pre id="chatbox"></pre> </div>
+    <input type="text" id="message" />
+    <input type="button" id="sendmessage" value="Send" />
+    @section scripts {
+        <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+        <script src="~/signalr/hubs"></script>
+        <script>
+            $(function() {
+                // Reference the auto-generated proxy for the hub.
+                var chat = $.connection.groupUpHub;
+                // Create a function that the hub can call back to display messages.
+                chat.client.addNewMessageToPage = function(name, message) {
+                    // Add the message to the page.
+                    $('#chatbox').append('<strong>' + name + ': </strong>' + message + '\n');
+                };
+                // Get the user name and store it to prepend to messages.
+                $('#displayname').val(prompt('Enter your name:', ''));
+                // Set initial focus to message input box.
+                $('#message').focus();
+                // Start the connection.
+                $.connection.hub.start().done(function() {
+                    chat.server.joinRoom(@Model.Group.GroupId.ToString());
+                    $('#sendmessage').click(function() {
+
+                        // Call the Send method on the hub.
+                        chat.server.send('@Model.User.AspNetIdentity.UserName', $('#message').val(), @Model.Group.GroupId.ToString());
+                        // Clear text box and reset focus for next comment.
+                        $('#message').val('').focus();
+                    });
+                });
+            });
+        </script>
+    }
 }
+
