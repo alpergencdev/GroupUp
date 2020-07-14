@@ -1,0 +1,30 @@
+﻿@using GroupUp.Controllers
+@model GroupUp.ViewModels.GroupDetailsViewModel
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Group Details</h2>
+
+@if (Model.Group == null)
+{
+    <p>The group with the given ID does not exist.</p>
+}
+else
+{
+    <p>Group Title: @Model.Group.Title</p>
+    <p>Group Description: @Model.Group.Description</p>
+    <p>Group Members:</p>
+    <ul>
+        @foreach (var usr in @Model.Group.Members)
+        {
+            <li>
+                @usr.AspNetIdentity.UserName | @Html.ActionLink("View User", "Details", "Users", new {userId = @usr.UserId}, null) | Report User
+            </li>
+        }
+    </ul>
+    <hr />
+    <h3>Chat</h3>
+    <div style="height: 500px; border:1px solid #ccc;overflow:auto;">
+    </div>
+}

@@ -321,6 +321,7 @@
     <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -359,6 +360,7 @@
     <Compile Include="ViewModels\GetLocationViewModel.cs" />
     <Compile Include="ViewModels\GroupRequestsViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
+    <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -426,6 +428,8 @@
     <Content Include="Views\Groups\Requests.cshtml" />
     <Content Include="Views\Groups\UserGroups.cshtml" />
     <Content Include="Views\Groups\GetLocation.cshtml" />
+    <Content Include="Views\Groups\MemberDetails.cshtml" />
+    <Content Include="Views\Users\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

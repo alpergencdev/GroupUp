@@ -19,7 +19,7 @@ else
         @foreach (var usr in @Model.Group.Members)
         {
             <li>
-                @usr.UserId
+                @usr.AspNetIdentity.UserName
             </li>
         }
     </ul>

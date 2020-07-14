@@ -1,0 +1,19 @@
+﻿@model GroupUp.ViewModels.UserDetailsViewModel
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>User Details</h2>
+
+@if (!Model.UserCanView)
+{
+    <p>@Model.DenyMessage</p>
+}
+else
+{
+    <p>Username: @Model.User.AspNetIdentity.UserName</p>
+    <p>Security Level: @Model.User.SecurityLevel</p>
+    <p>Trust Points: @Model.User.TrustPoints</p>
+    <p>Contact Info: @Model.User.ContactInfo</p>
+}

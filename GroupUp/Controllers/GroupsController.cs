@@ -31,11 +31,16 @@ namespace GroupUp.Controllers
         {
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            var targetGroup = _context.Groups.Include(g => g.Members).Include(g => g.Members.Select( u => u.AspNetIdentity) ).SingleOrDefault(g => g.GroupId == id);
             GroupDetailsViewModel gvm = new GroupDetailsViewModel()
             {
-                Group = _context.Groups.Include(g => g.Members).SingleOrDefault(g => g.GroupId == id),
+                Group = targetGroup,
                 User = currentUser
             };
+            if (targetGroup != null && targetGroup.Members.Contains(currentUser))
+            {
+                return View("MemberDetails", gvm);
+            }
             return View(gvm);
         }
 
