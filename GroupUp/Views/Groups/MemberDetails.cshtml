@@ -25,7 +25,7 @@ else
     </ul>
     <hr />
     <h3>Chat</h3>
-    <div style="max-height: 500px; border:1px solid #ccc;overflow:auto;"><pre id="chatbox"></pre> </div>
+    <div style="max-height: 500px; border:1px solid #ccc;overflow:auto;"><pre id="chatbox">@Html.Raw(Model.Group.ChatLog)</pre> </div>
     <input type="text" id="message" />
     <input type="button" id="sendmessage" value="Send" />
     @section scripts {
@@ -41,7 +41,6 @@ else
                     $('#chatbox').append('<strong>' + name + ': </strong>' + message + '\n');
                 };
                 // Get the user name and store it to prepend to messages.
-                $('#displayname').val(prompt('Enter your name:', ''));
                 // Set initial focus to message input box.
                 $('#message').focus();
                 // Start the connection.
