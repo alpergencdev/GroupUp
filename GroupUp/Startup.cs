@@ -9,6 +9,7 @@ namespace GroupUp
     {
         public void Configuration(IAppBuilder app)
         {
+            app.MapSignalR();
             ConfigureAuth(app);
         }
     }

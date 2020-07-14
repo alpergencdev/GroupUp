@@ -353,6 +353,7 @@
     <Compile Include="Models\LocationProperties.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="GroupUpHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\GetLocationViewModel.cs" />
