@@ -28,5 +28,7 @@ namespace GroupUp.Models
         [Required] public string Continent { get; set; }
 
         [Required] public IList<User> Members { get; set; }
+
+        public string ChatLog { get; set; }
     }
 }
