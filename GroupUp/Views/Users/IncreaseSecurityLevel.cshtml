@@ -20,7 +20,7 @@
     }
     else
     {
-        // @Html.ActionLink("INCREASE SECURITY LEVEL")
+        @Html.ActionLink("INCREASE SECURITY LEVEL", "IncreaseSecurityLevelTo1");
     }
 
 }
@@ -37,6 +37,10 @@ else if (Model.User.SecurityLevel < 2)
     }
     else
     {
-        // @Html.ActionLink("INCREASE SECURITY LEVEL")
+        @Html.ActionLink("INCREASE SECURITY LEVEL", "IncreaseSecurityLevelTo1");
     }
+}
+else
+{
+    <p>You have achieved the highest security level.</p>
 }

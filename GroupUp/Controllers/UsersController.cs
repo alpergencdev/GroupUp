@@ -89,9 +89,6 @@ namespace GroupUp.Controllers
                     // verify the user
                     currentUser.IsVerified = true;
                     currentUser.VerificationCode = null;
-                    // ADD NECESSARY ROLES HERE
-
-                    //
                     _context.SaveChanges();
                     return RedirectToAction("UserGroups", "Groups");
                 }
@@ -104,7 +101,68 @@ namespace GroupUp.Controllers
         [Authorize]
         public ActionResult IncreaseSecurityLevel()
         {
-            return View();
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.AspNetIdentity)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            var viewModel = new ISLViewModel()
+            {
+                User = currentUser
+            };
+            return View(viewModel);
+        }
+
+        [Authorize]
+        public ActionResult IncreaseSecurityLevelTo1()
+        {
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.AspNetIdentity)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            if (currentUser == null)
+            {
+                return HttpNotFound();
+            }
+            if (currentUser.SecurityLevel > 1)
+            {
+                return Content("Your security level is higher than 1.");
+            }
+
+            if (!currentUser.IsVerified)
+            {
+                return Content("You do not meet the requirements to increase your security level.");
+            }
+            // ADD NECESSARY ROLES
+
+            // THEN
+            currentUser.SecurityLevel = 1;
+            _context.SaveChanges();
+            return RedirectToAction("UserGroups", "Groups");
+        }
+
+        [Authorize]
+        public ActionResult IncreaseSecurityLevelTo2()
+        {
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.AspNetIdentity)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            if (currentUser == null)
+            {
+                return HttpNotFound();
+            }
+            if (currentUser.SecurityLevel > 2 )
+            {
+                return Content("Your security level is higher than 2.");
+            }
+
+            if (currentUser.TrustPoints < 50)
+            {
+                return Content("You do not meet the requirements to increase your security level.");
+            }
+            // ADD NECESSARY ROLES
+
+            // THEN
+            currentUser.SecurityLevel = 2;
+            _context.SaveChanges();
+            return RedirectToAction("UserGroups", "Groups");
         }
     }
 }
