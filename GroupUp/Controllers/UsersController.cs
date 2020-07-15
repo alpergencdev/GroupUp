@@ -100,5 +100,11 @@ namespace GroupUp.Controllers
 
             }
         }
+
+        [Authorize]
+        public ActionResult IncreaseSecurityLevel()
+        {
+            return View();
+        }
     }
 }

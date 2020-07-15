@@ -317,6 +317,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="CaptchaHub.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -368,6 +369,7 @@
     <Compile Include="Models\LocationModels\LocationMethods.cs" />
     <Compile Include="Models\LocationProperties.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Recaptcha.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="GroupUpHub.cs" />
     <Compile Include="Models\UserReport.cs" />
@@ -377,6 +379,7 @@
     <Compile Include="ViewModels\GroupReportViewModel.cs" />
     <Compile Include="ViewModels\GroupRequestsViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
+    <Compile Include="ViewModels\ISLViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
     <Compile Include="ViewModels\UserReportViewModel.cs" />
@@ -452,6 +455,7 @@
     <Content Include="Views\Reports\ReportUser.cshtml" />
     <Content Include="Views\Reports\ReportGroup.cshtml" />
     <Content Include="Views\Users\VerifyUser.cshtml" />
+    <Content Include="Views\Users\IncreaseSecurityLevel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

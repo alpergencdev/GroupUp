@@ -2,10 +2,13 @@
 @{
     ViewBag.Title = "Kaydol";
 }
-
+@* ReSharper disable once MissingTitleTag *@
+<head>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
 <h2>@ViewBag.Title.</h2>
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "theForm" }))
 {
     @Html.AntiForgeryToken()
     <h4>Yeni bir hesap oluşturun.</h4>
@@ -35,13 +38,43 @@
             @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
         </div>
     </div>
+
+    <div class="form-group" style="position:relative">
+        <div class="col-md-10"><div class="g-recaptcha" data-sitekey="6Lev1LEZAAAAAJUb_oqjU9eKOinhXG9RgPkU0bDc"></div></div>
+    </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Kaydol" />
+            <input type="submit" class="btn btn-default" id="submitBtn" value="Kaydol" />
         </div>
     </div>
+
 }
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script>
+        var hub = $.connection.captchaHub;
+        var form = document.getElementById("theForm");
+        hub.client.getCaptchaResult = function (bool) {
+            if (bool) {
+                form.submit();
+            }
+            else {
+                alert("Please complete the CAPTCHA.");
+            }
+        }
+
+
+        $.connection.hub.start().done(function () {
+            form.onsubmit = function (evt) {
+                evt.preventDefault();
+                // ReSharper disable once UseOfImplicitGlobalInFunctionScope
+                hub.server.handleResponse(grecaptcha.getResponse());
+                return false;
+            }
+        });
+
+    </script>
 }

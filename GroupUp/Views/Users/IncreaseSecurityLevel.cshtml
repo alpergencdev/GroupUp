@@ -1,0 +1,42 @@
+﻿@model GroupUp.ViewModels.ISLViewModel
+@{
+    ViewBag.Title = "IncreaseSecurityLevel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Increase Security Level</h2>
+<hr />
+@if (Model.User.SecurityLevel < 1)
+{
+    <h3>Security Level 1</h3>
+    <p>To get to security level 1, you need the following:</p>
+    <ul>
+        <li>E-mail verification</li>
+    </ul>
+
+    if (!@Model.User.IsVerified)
+    {
+        <p>You cannot increase your security level because you have not verified your email.</p>
+    }
+    else
+    {
+        // @Html.ActionLink("INCREASE SECURITY LEVEL")
+    }
+
+}
+else if (Model.User.SecurityLevel < 2)
+{
+    <h3>Security Level 2</h3>
+    <p>To get to security level 2, you need the following:</p>
+    <ul>
+        <li>50 Trust Points</li>
+    </ul>
+    if (Model.User.TrustPoints < 50)
+    {
+        <p>You need @( 50 - Model.User.TrustPoints) more trust points to advance to security level 2.</p>
+    }
+    else
+    {
+        // @Html.ActionLink("INCREASE SECURITY LEVEL")
+    }
+}
