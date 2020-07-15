@@ -352,6 +352,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\GroupReport.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LocationModels\JSONClasses.cs" />
     <Compile Include="Models\LocationModels\LocationMethods.cs" />
@@ -359,6 +360,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="GroupUpHub.cs" />
+    <Compile Include="Models\UserReport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\GetLocationViewModel.cs" />
