@@ -173,7 +173,7 @@ namespace GroupUp.Controllers
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    EmailSender.Send(model.Email, userObject.VerificationCode);
+                    EmailSender.Send(model.Email, (int) userObject.VerificationCode);
                     // Hesap onayını ve parola sıfırlamayı etkinleştirme hakkında daha fazla bilgi için lütfen https://go.microsoft.com/fwlink/?LinkID=320771 adresini ziyaret edin.
                     // Bu bağlantı ile bir e-posta yollayın
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);

@@ -90,8 +90,10 @@ namespace GroupUp.Controllers
                     currentUser.IsVerified = true;
                     currentUser.VerificationCode = null;
                     // ADD NECESSARY ROLES HERE
+
+                    //
                     _context.SaveChanges();
-                    return Content(":)");
+                    return RedirectToAction("UserGroups", "Groups");
                 }
 
                 return RedirectToAction("UserGroups", "Groups");
