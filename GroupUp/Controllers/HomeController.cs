@@ -10,7 +10,7 @@ namespace GroupUp.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("UserGroups", "Groups");
         }
 
         public ActionResult About()

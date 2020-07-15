@@ -58,5 +58,45 @@ namespace GroupUp.Controllers
 
             return View(viewModel);
         }
+
+        [Authorize]
+        public ActionResult VerifyUser()
+        {
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            if (currentUser.IsVerified)
+            {
+                return RedirectToAction("UserGroups", "Groups");
+            }
+            var viewModel = new VerifyUserViewModel();
+            return View(viewModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult PostVerify(VerifyUserViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("VerifyUser", viewModel);
+            }
+            else
+            {
+                var aspNetId = User.Identity.GetUserId();
+                var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+                if (!currentUser.IsVerified && currentUser.VerificationCode == viewModel.VerificationCode)
+                {
+                    // verify the user
+                    currentUser.IsVerified = true;
+                    currentUser.VerificationCode = null;
+                    // ADD NECESSARY ROLES HERE
+                    _context.SaveChanges();
+                    return Content(":)");
+                }
+
+                return RedirectToAction("UserGroups", "Groups");
+
+            }
+        }
     }
 }

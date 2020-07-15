@@ -354,8 +354,13 @@
     <Compile Include="Migrations\202007151136219_CreatedReports.Designer.cs">
       <DependentUpon>202007151136219_CreatedReports.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007151836561_AddVerificationProperties.cs" />
+    <Compile Include="Migrations\202007151836561_AddVerificationProperties.Designer.cs">
+      <DependentUpon>202007151836561_AddVerificationProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\EmailSender.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\GroupReport.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -375,6 +380,7 @@
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
     <Compile Include="ViewModels\UserReportViewModel.cs" />
+    <Compile Include="ViewModels\VerifyUserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -445,6 +451,7 @@
     <Content Include="Views\Users\Details.cshtml" />
     <Content Include="Views\Reports\ReportUser.cshtml" />
     <Content Include="Views\Reports\ReportGroup.cshtml" />
+    <Content Include="Views\Users\VerifyUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -483,6 +490,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007151136219_CreatedReports.resx">
       <DependentUpon>202007151136219_CreatedReports.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007151836561_AddVerificationProperties.resx">
+      <DependentUpon>202007151836561_AddVerificationProperties.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

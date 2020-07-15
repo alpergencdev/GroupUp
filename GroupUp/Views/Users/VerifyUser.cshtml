@@ -1,0 +1,19 @@
+﻿@model GroupUp.ViewModels.VerifyUserViewModel
+@{
+    ViewBag.Title = "VerifyUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Verify Account</h2>
+
+@using (Html.BeginForm("PostVerify", "Users", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.VerificationCode)
+        @Html.TextBoxFor(m => m.VerificationCode, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.VerificationCode)
+    </div>
+
+    <button class="btn btn-primary" type="submit">VERIFY ACCOUNT</button>
+}
+

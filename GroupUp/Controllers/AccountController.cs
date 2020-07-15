@@ -152,12 +152,15 @@ namespace GroupUp.Controllers
         {
             if (ModelState.IsValid)
             {
+                Random _random = new Random();
                 var userObject = new User()
                 {
                     ContactInfo = "No contact info specified.",
                     SecurityLevel = 0,
                     TrustPoints = 0,
-                    Groups = new List<Group>()
+                    Groups = new List<Group>(),
+                    VerificationCode = _random.Next(100000, 999999),
+                    IsVerified = false
                 };
                 var user = new ApplicationUser
                 {
@@ -170,7 +173,7 @@ namespace GroupUp.Controllers
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    EmailSender.Send(model.Email, userObject.VerificationCode);
                     // Hesap onayını ve parola sıfırlamayı etkinleştirme hakkında daha fazla bilgi için lütfen https://go.microsoft.com/fwlink/?LinkID=320771 adresini ziyaret edin.
                     // Bu bağlantı ile bir e-posta yollayın
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
