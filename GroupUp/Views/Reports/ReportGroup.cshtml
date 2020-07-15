@@ -1,0 +1,39 @@
+﻿@using GroupUp.Models
+@model GroupUp.ViewModels.GroupReportViewModel
+@{
+    ViewBag.Title = "ReportGroup";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Report Group</h2>
+@if (Model.GroupReport.TargetGroup == null)
+{
+    <p>The group with the given ID does not exist.</p>
+}
+else
+{
+    using (Html.BeginForm("PostGroupReport", "Reports", FormMethod.Post))
+    {
+        <p>
+            Report for @Html.ActionLink(Model.GroupReport.TargetGroup.Title, "Details", "Groups",
+                           new { groupId = Model.ReportedGroupId }, null)
+        </p>
+        <div class="form-group">
+            @Html.LabelFor(m => m.GroupReport.Reason)
+            @Html.TextBoxFor(m => m.GroupReport.Reason, new { @class = "form-control"})
+            @Html.ValidationMessageFor(m => m.GroupReport.Reason)
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.GroupReport.DetailedDescription)
+            @Html.TextBoxFor(m => m.GroupReport.DetailedDescription, new { @class = "form-control"})
+            @Html.ValidationMessageFor(m => m.GroupReport.DetailedDescription)
+        </div>
+
+        @Html.HiddenFor(m => m.GroupReport.TargetGroup);
+        @Html.HiddenFor(m => m.GroupReport.GroupReportId)
+        @Html.HiddenFor(m => m.ReportedGroupId)
+        <button class="btn btn-primary" type="submit">SUBMIT REPORT</button>
+    }
+}
+

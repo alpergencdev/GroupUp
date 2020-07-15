@@ -25,7 +25,8 @@ namespace GroupUp.Models
     {
         public new DbSet<User> Users { get; set; }
         public DbSet<Group> Groups { get; set; }
-        
+        public DbSet<UserReport> UserReports { get; set; }
+        public DbSet<GroupReport> GroupReports { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

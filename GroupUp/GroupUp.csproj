@@ -321,6 +321,7 @@
     <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -349,6 +350,10 @@
     <Compile Include="Migrations\202007141819209_AddChatLogToGroup.Designer.cs">
       <DependentUpon>202007141819209_AddChatLogToGroup.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007151136219_CreatedReports.cs" />
+    <Compile Include="Migrations\202007151136219_CreatedReports.Designer.cs">
+      <DependentUpon>202007151136219_CreatedReports.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Group.cs" />
@@ -364,10 +369,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\GetLocationViewModel.cs" />
+    <Compile Include="ViewModels\GroupReportViewModel.cs" />
     <Compile Include="ViewModels\GroupRequestsViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
+    <Compile Include="ViewModels\UserReportViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -436,6 +443,8 @@
     <Content Include="Views\Groups\GetLocation.cshtml" />
     <Content Include="Views\Groups\MemberDetails.cshtml" />
     <Content Include="Views\Users\Details.cshtml" />
+    <Content Include="Views\Reports\ReportUser.cshtml" />
+    <Content Include="Views\Reports\ReportGroup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -471,6 +480,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007141819209_AddChatLogToGroup.resx">
       <DependentUpon>202007141819209_AddChatLogToGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007151136219_CreatedReports.resx">
+      <DependentUpon>202007151136219_CreatedReports.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
