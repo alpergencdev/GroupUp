@@ -28,15 +28,15 @@ namespace GroupUp.Models
             msg.To.Add(new MailAddress(email));
 
             msg.Subject = "GroupUp - Your verification code";
-            msg.IsBodyHtml = true;
-            msg.Body = string.Format($"<html><head></head><body><b>Your verification code is: {verificationCode}</b></body>");
+            msg.IsBodyHtml = false;
+            msg.Body = string.Format($"Your verification code is: {verificationCode}");
 
             try
             {
                 client.Send(msg);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
