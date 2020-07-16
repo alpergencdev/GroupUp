@@ -24,6 +24,7 @@ else
             <li>
                 @usr.AspNetIdentity.UserName | @Html.ActionLink("View User", "Details", "Users", new { userId = @usr.UserId }, null)
                 | @Html.ActionLink("Report User", "ReportUser", "Reports", new { userId = usr.UserId }, null)
+                | @Html.ActionLink("Kick User", "Kick", new { userId = usr.UserId, groupId = Model.Group.GroupId }, null)
             </li>
         }
         else
@@ -35,7 +36,7 @@ else
     }
 </ul>
     <hr />
-    <button class="btn-primary">Edit Group</button>
+    @Html.ActionLink("Edit Group", "Edit", new {groupId = Model.Group.GroupId}, new {@class="btn btn-primary"})
     using (@Html.BeginForm("Close", "Groups", new {groupId = Model.Group.GroupId}, FormMethod.Post))
     {
         <button type="submit" class="btn btn-primary">Close Group</button>

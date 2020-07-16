@@ -58,10 +58,10 @@ namespace GroupUp.Controllers
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Parolanız değiştirildi."
-                : message == ManageMessageId.SetPasswordSuccess ? "Parolanız ayarlandı."
+                message == ManageMessageId.ChangePasswordSuccess ? "Your password is changed."
+                : message == ManageMessageId.SetPasswordSuccess ? "Your password is set."
                 : message == ManageMessageId.SetTwoFactorSuccess ? "İki öğeli kimlik doğrulama sağlayıcısı ayarlandı."
-                : message == ManageMessageId.Error ? "Hata oluştu."
+                : message == ManageMessageId.Error ? "An error has occurred."
                 : message == ManageMessageId.AddPhoneSuccess ? "Telefon numaranız eklendi."
                 : message == ManageMessageId.RemovePhoneSuccess ? "Telefon numaranız kaldırıldı."
                 : "";

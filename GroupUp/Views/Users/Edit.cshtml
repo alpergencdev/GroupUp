@@ -1,0 +1,24 @@
+﻿@model GroupUp.ViewModels.UserEditViewModel
+
+@{
+    ViewBag.Title = "title";
+}
+
+<h2>Edit User</h2>
+
+@using (Html.BeginForm("PostEdit", "Users", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Email)
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Email)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.ContactInfo)
+        @Html.TextAreaFor(m => m.ContactInfo, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ContactInfo)
+    </div>
+
+    <button class="btn btn-primary" type="submit">Finish Edit</button>
+}

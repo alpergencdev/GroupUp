@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using GroupUp.Models;
@@ -15,7 +16,7 @@ namespace GroupUp.Controllers
             _context = new ApplicationDbContext();
         }
         
-        [Authorize]
+        [Authorize(Roles="SecurityLevel2")]
         public ActionResult Details(int userId)
         {
             var aspNetId = User.Identity.GetUserId();
@@ -169,6 +170,55 @@ namespace GroupUp.Controllers
             }
 
             return RedirectToAction("VerifyUser");
+        }
+
+        [Authorize]
+        public ActionResult Edit()
+        {
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.AspNetIdentity)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+
+            if (currentUser == null)
+            {
+                return HttpNotFound();
+            }
+
+            var viewModel = new UserEditViewModel()
+            {
+                ContactInfo = currentUser.ContactInfo,
+                Email = currentUser.AspNetIdentity.Email
+            };
+            return View(viewModel);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult PostEdit(UserEditViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Edit", viewModel);
+            }
+
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.AspNetIdentity)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+
+            if (currentUser == null)
+            {
+                return HttpNotFound();
+            }
+
+            currentUser.ContactInfo = viewModel.ContactInfo;
+            if (currentUser.AspNetIdentity.Email != viewModel.Email && !currentUser.IsVerified)
+            {
+                if (currentUser.VerificationCode != null)
+                    EmailSender.Send(viewModel.Email, (int) currentUser.VerificationCode);
+            }
+            currentUser.AspNetIdentity.Email = viewModel.Email;
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Manage");
         }
     }
 }

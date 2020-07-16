@@ -92,7 +92,7 @@ namespace GroupUp.Controllers
                 }
                 else
                 {
-                    return HttpNotFound();
+                    return View("Edit", viewModel);
                 }
             }
 
@@ -466,6 +466,82 @@ namespace GroupUp.Controllers
             }
         }
 
+        [Authorize(Roles="SecurityLevel1")]
+        [HttpPost]
+        public ActionResult Leave(int? groupId)
+        {
+            if (!groupId.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var targetGroup = _context.Groups.Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.AspNetIdentity)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            targetGroup?.Members.Remove(currentUser);
+            _context.SaveChanges();
+            return RedirectToAction("UserGroups", "Groups");
+        }
+
+        [Authorize(Roles="SecurityLevel2")]
+        public ActionResult Edit(int? groupId)
+        {
+            if (!groupId.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var targetGroup = _context.Groups.Include(g => g.Creator)
+                .Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.AspNetIdentity)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+
+            if (targetGroup != null && (currentUser != null && targetGroup.Creator.UserId == currentUser.UserId))
+            {
+                var viewModel = new CreateGroupViewModel()
+                {
+                    City = targetGroup.City,
+                    Country = targetGroup.Country,
+                    Continent = targetGroup.Continent,
+                    DetailedDescription = targetGroup.Description,
+                    Title = targetGroup.Title,
+                    GroupId = targetGroup.GroupId,
+                    MaxUserCapacity = targetGroup.MaxUserCapacity
+                };
+                return View(viewModel);
+            }
+
+            return HttpNotFound();
+        }
+
+        [Authorize(Roles = "SecurityLevel2")]
+        public ActionResult Kick(int? userId, int? groupId)
+        {
+            if (!userId.HasValue || !groupId.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var targetGroup = _context.Groups.Include(g => g.Creator)
+                .Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.AspNetIdentity)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+
+            if (targetGroup != null && (currentUser != null && targetGroup.Creator.UserId == currentUser.UserId))
+            {
+                var targetUser = _context.Users.SingleOrDefault(u => u.UserId == userId);
+                if (targetGroup.Members.Remove(targetUser))
+                {
+                    return RedirectToAction("Details", new {groupId = groupId});
+                }
+                return HttpNotFound();
+            }
+
+            return HttpNotFound();
+        }
     }
 
    

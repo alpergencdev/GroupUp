@@ -34,6 +34,7 @@ else
             }
         }
     </ul>
+    @Html.ActionLink("Leave Group", "Leave", new {groupId = Model.Group.GroupId}, new{ @class="btn btn-primary"})
     <hr />
     <h3>Chat</h3>
     <div style="max-height: 500px; border:1px solid #ccc;overflow:auto;"><pre id="chatbox">@Html.Raw(Model.Group.ChatLog)</pre> </div>

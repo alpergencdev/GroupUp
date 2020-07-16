@@ -30,14 +30,14 @@ namespace GroupUp.Models
     public class SetPasswordViewModel
     {
         [Required]
-        [StringLength(100, ErrorMessage = "{0}, en az {2} karakter uzunluğunda olmalıdır.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0} should be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Yeni parola")]
+        [Display(Name = "New Password")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Yeni parolayı onaylayın")]
-        [Compare("NewPassword", ErrorMessage = "Yeni parola ve onay parolası eşleşmiyor.")]
+        [Display(Name = "Confirm New Password")]
+        [Compare("NewPassword", ErrorMessage = "The new password and confirm passwords do not match.")]
         public string ConfirmPassword { get; set; }
     }
 
@@ -45,18 +45,18 @@ namespace GroupUp.Models
     {
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Mevcut parola")]
+        [Display(Name = "Current password")]
         public string OldPassword { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "{0}, en az {2} karakter uzunluğunda olmalıdır.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0} should be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Yeni parola")]
+        [Display(Name = "New password")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Yeni parolayı onaylayın")]
-        [Compare("NewPassword", ErrorMessage = "Yeni parola ve onay parolası eşleşmiyor.")]
+        [Display(Name = "New password")]
+        [Compare("NewPassword", ErrorMessage = "The new password and confirm passwords do not match.")]
         public string ConfirmPassword { get; set; }
     }
 

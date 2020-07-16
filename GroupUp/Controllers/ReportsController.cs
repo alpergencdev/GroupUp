@@ -60,7 +60,7 @@ namespace GroupUp.Controllers
             return View(viewModel);
         }
 
-        [Authorize]
+        [Authorize(Roles="SecurityLevel1")]
         [HttpPost]
         public ActionResult PostUserReport(UserReportViewModel viewModel)
         {
