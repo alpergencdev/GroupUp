@@ -34,7 +34,7 @@ namespace GroupUp.Controllers
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             var targetGroup = _context.Groups.Include(g => g.Creator).Include(g => g.Members).Include(g => g.Members.Select( u => u.AspNetIdentity) ).SingleOrDefault(g => g.GroupId == id);
-            if (targetGroup.IsClosed)
+            if (targetGroup != null && targetGroup.IsClosed)
             {
                 return RedirectToAction("ClosedDetails", new {groupId = targetGroup.GroupId});
             }
@@ -263,6 +263,7 @@ namespace GroupUp.Controllers
             return View(viewModel);
         }
 
+        [Authorize]
         public ActionResult GetLocation(string returnAction)
         {
             if (Session["GetLocationFlag"] != null && (bool)Session["GetLocationFlag"])
@@ -278,6 +279,7 @@ namespace GroupUp.Controllers
             return HttpNotFound();
         }
 
+        [Authorize]
         public ActionResult ReadLocation(double lat, double lng, string returnToAction)
         {
             var locationProperties = new LocationProperties()
@@ -341,6 +343,7 @@ namespace GroupUp.Controllers
             return RedirectToAction("UserGroups", "Groups");
         }
 
+        [Authorize]
         public ActionResult ClosedDetails(int? groupId)
         {
             if (!groupId.HasValue)
