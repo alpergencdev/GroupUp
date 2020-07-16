@@ -16,7 +16,7 @@
 
     if (!@Model.User.IsVerified)
     {
-        <p>You cannot increase your security level because you have not verified your email.</p>
+        <p>You cannot increase your security level because you have not verified your email. Click your username on the top right of the page to verify.</p>
     }
     else
     {
@@ -37,7 +37,7 @@ else if (Model.User.SecurityLevel < 2)
     }
     else
     {
-        @Html.ActionLink("INCREASE SECURITY LEVEL", "IncreaseSecurityLevelTo1");
+        @Html.ActionLink("INCREASE SECURITY LEVEL", "IncreaseSecurityLevelTo2");
     }
 }
 else

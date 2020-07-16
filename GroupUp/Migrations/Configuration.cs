@@ -1,3 +1,7 @@
+using GroupUp.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+
 namespace GroupUp.Migrations
 {
     using System;
@@ -18,6 +22,12 @@ namespace GroupUp.Migrations
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data.
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager =new RoleManager<IdentityRole>(roleStore); 
+            roleManager.Create(new IdentityRole("SecurityLevel0"));
+            roleManager.Create(new IdentityRole("SecurityLevel1"));
+            roleManager.Create(new IdentityRole("SecurityLevel2"));
+            roleManager.Create(new IdentityRole("Moderator"));
         }
     }
 }

@@ -4,6 +4,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<h2>Your Groups</h2>
+@if ( @Model.User.SecurityLevel >= 2)
+{
+    @Html.ActionLink("Create a Group", "Create", "Groups", null, new {@class="btn btn-primary"})
+}
 <h2>Joined Groups</h2>
 @{
     if (Model.JoinedGroups.Count <= 0)
@@ -30,7 +35,11 @@
 
 <h2>Created Groups</h2>
 @{
-    if (Model.CreatedGroups.Count <= 0)
+    if (Model.User.SecurityLevel < 2)
+    {
+        <p>You cannot create a group yet, since your security level is below 2.</p>
+    }
+    else if (Model.CreatedGroups.Count <= 0)
     {
         <p>You have not created any groups yet.</p>
     }

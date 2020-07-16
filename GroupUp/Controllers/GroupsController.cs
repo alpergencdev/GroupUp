@@ -66,68 +66,65 @@ namespace GroupUp.Controllers
             }
 
             var locationProperties = (LocationProperties) Session["Location"];
-            var gvm = new GroupDetailsViewModel()
+            var viewModel = new CreateGroupViewModel()
             {
-                Group = new Group()
-                {
-                    City = locationProperties.City,
-                    Country = locationProperties.CountryLongName,
-                    Continent = locationProperties.Continent
-                }
+                GroupId = -1,
+                City = locationProperties.City,
+                Country = locationProperties.CountryLongName,
+                Continent = locationProperties.Continent,
+                Title = "",
+                DetailedDescription = "",
+                MaxUserCapacity = 0
             };
-            return View(gvm);
+            return View(viewModel);
         }
 
         [HttpPost]
-        public ActionResult Save(GroupDetailsViewModel gvm)
+        public ActionResult Save(CreateGroupViewModel viewModel)
         {
             string aspUserId = User.Identity.GetUserId();
             var user = _context.Users.Include(u => u.AspNetIdentity).SingleOrDefault(u => u.AspNetIdentity.Id == aspUserId);
-            gvm.Group.Creator = user;
-            gvm.Group.Members = new List<User>();
-            gvm.Group.Members.Add(user);
             if (!ModelState.IsValid)
             {
-                bool allInputsAreValid = true;
-                for(int i = 0; i < ModelState.Values.Count - 2; i++)
+                if (viewModel.GroupId < 0)
                 {
-                    if (ModelState.Values.ElementAt(i).Errors.Count > 0)
-                    {
-                        allInputsAreValid = false;
-                        break;
-                    }
+                    return View("Create", viewModel);
                 }
-
-                if (allInputsAreValid)
+                else
                 {
-                    try
-                    {
-                        Group group = new Group()
-                        {
-                            Title = gvm.Group.Title,
-                            Description = gvm.Group.Description,
-                            MaxUserCapacity = gvm.Group.MaxUserCapacity,
-                            City = gvm.Group.City,
-                            Continent = gvm.Group.Continent,
-                            Country = gvm.Group.Country,
-                            Members = new List<User>()
-                            {
-                                user
-                            },
-                            Creator = user
-                        };
-                        _context.Groups.Add(group);
-                        _context.SaveChanges();
-                        return View("Index");
-                    }
-                    catch (ValidationException)
-                    {
-                        return View("Create", gvm);
-                    }
+                    return HttpNotFound();
                 }
             }
 
-            _context.Groups.Add(gvm.Group);
+            if (viewModel.GroupId < 0)
+            {
+                Group newGroup = new Group()
+                {
+                    Title = viewModel.Title,
+                    Description = viewModel.DetailedDescription,
+                    MaxUserCapacity = viewModel.MaxUserCapacity,
+                    City = viewModel.City,
+                    Continent = viewModel.Continent,
+                    Country = viewModel.Country,
+                    Members = new List<User>()
+                    {
+                        user
+                    },
+                    Creator = user
+                };
+                _context.Groups.Add(newGroup);
+            }
+            else
+            {
+                var groupInDb = _context.Groups.SingleOrDefault(g => g.GroupId == viewModel.GroupId);
+                if (groupInDb == null)
+                {
+                    return HttpNotFound();
+                }
+
+                groupInDb.Title = viewModel.Title;
+                groupInDb.Description = viewModel.DetailedDescription;
+            }
             _context.SaveChanges();
             return View("Index");
         }
@@ -154,7 +151,7 @@ namespace GroupUp.Controllers
             return View(viewModel);
         }
 
-        [Authorize]
+        [Authorize(Roles="SecurityLevel1")]
         [HttpPost]
         public ActionResult Join(int groupId)
         {
@@ -254,6 +251,7 @@ namespace GroupUp.Controllers
             }
             var viewModel = new UserGroupsViewModel()
             {
+                User = currentUser,
                 CreatedGroups = createdGroups.ToList(),
                 JoinedGroups = joinedGroups.ToList(),
                 ClosedGroups = closedUserGroups

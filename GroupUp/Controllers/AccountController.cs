@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using GroupUp.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace GroupUp.Controllers
 {
@@ -174,6 +175,7 @@ namespace GroupUp.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     EmailSender.Send(model.Email, (int) userObject.VerificationCode);
+                    await UserManager.AddToRoleAsync(user.Id, "SecurityLevel0");
                     // Hesap onayını ve parola sıfırlamayı etkinleştirme hakkında daha fazla bilgi için lütfen https://go.microsoft.com/fwlink/?LinkID=320771 adresini ziyaret edin.
                     // Bu bağlantı ile bir e-posta yollayın
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -440,6 +442,19 @@ namespace GroupUp.Controllers
             base.Dispose(disposing);
         }
 
+        [Authorize]
+        public async Task<ActionResult> IncreaseSecurityLevelTo1()
+        {
+            await UserManager.AddToRoleAsync(User.Identity.GetUserId(), "SecurityLevel1");
+            return RedirectToAction("UserGroups", "Groups");
+        }
+
+        [Authorize]
+        public async Task<ActionResult> IncreaseSecurityLevelTo2()
+        {
+            await UserManager.AddToRoleAsync(User.Identity.GetUserId(), "SecurityLevel2");
+            return RedirectToAction("UserGroups", "Groups");
+        }
         #region Yardımcılar
         // Dışarıdan oturum açma sağlayıcıları eklerken XSRF koruması için kullanılır
         private const string XsrfKey = "XsrfId";

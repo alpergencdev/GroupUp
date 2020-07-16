@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using GroupUp.Models;
 using GroupUp.ViewModels;
@@ -13,7 +10,6 @@ namespace GroupUp.Controllers
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         public UsersController()
         {
             _context = new ApplicationDbContext();
@@ -26,7 +22,7 @@ namespace GroupUp.Controllers
             var currentUser = _context.Users.Include(u => u.Groups).SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 
             var targetUser = _context.Users.Include(u => u.Groups).Include(u => u.AspNetIdentity).SingleOrDefault(u => u.UserId == userId);
-            UserDetailsViewModel viewModel = null;
+            UserDetailsViewModel viewModel;
 
             if (targetUser == null)
             {
@@ -64,7 +60,7 @@ namespace GroupUp.Controllers
         {
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
-            if (currentUser.IsVerified)
+            if (currentUser != null && currentUser.IsVerified)
             {
                 return RedirectToAction("UserGroups", "Groups");
             }
@@ -84,7 +80,7 @@ namespace GroupUp.Controllers
             {
                 var aspNetId = User.Identity.GetUserId();
                 var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
-                if (!currentUser.IsVerified && currentUser.VerificationCode == viewModel.VerificationCode)
+                if (currentUser != null && (!currentUser.IsVerified && currentUser.VerificationCode == viewModel.VerificationCode))
                 {
                     // verify the user
                     currentUser.IsVerified = true;
@@ -130,12 +126,10 @@ namespace GroupUp.Controllers
             {
                 return Content("You do not meet the requirements to increase your security level.");
             }
-            // ADD NECESSARY ROLES
-
             // THEN
             currentUser.SecurityLevel = 1;
             _context.SaveChanges();
-            return RedirectToAction("UserGroups", "Groups");
+            return RedirectToAction("IncreaseSecurityLevelTo1", "Account");
         }
 
         [Authorize]
@@ -157,12 +151,24 @@ namespace GroupUp.Controllers
             {
                 return Content("You do not meet the requirements to increase your security level.");
             }
-            // ADD NECESSARY ROLES
 
             // THEN
             currentUser.SecurityLevel = 2;
             _context.SaveChanges();
-            return RedirectToAction("UserGroups", "Groups");
+            return RedirectToAction("IncreaseSecurityLevelTo2", "Account");
+        }
+
+        [Authorize]
+        public ActionResult ResendVerificationEmail()
+        {
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.AspNetIdentity).SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            if (currentUser != null && currentUser.VerificationCode != null && !currentUser.IsVerified)
+            {
+                EmailSender.Send(currentUser.AspNetIdentity.Email, (int) currentUser.VerificationCode);
+            }
+
+            return RedirectToAction("VerifyUser");
         }
     }
 }

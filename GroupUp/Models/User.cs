@@ -24,6 +24,7 @@ namespace GroupUp.Models
         [Required] 
         public IList<Group> Groups { get; set; }
 
+
         public IList<ClosedGroup> ClosedGroups { get; set; }
         public int? VerificationCode { get; set; }
 

@@ -1,4 +1,4 @@
-﻿@model GroupUp.ViewModels.GroupDetailsViewModel
+﻿@model GroupUp.ViewModels.CreateGroupViewModel
 
 @{
     ViewBag.Title = "title";
@@ -8,43 +8,43 @@
 
 @using (Html.BeginForm("Save", "Groups", FormMethod.Post))
 {
+    @Html.ValidationSummary()
     <div class="form-group">
-        @Html.LabelFor(m => m.Group.Title)
-        @Html.TextBoxFor(m => m.Group.Title, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Group.Title)
+        @Html.LabelFor(m => m.Title)
+        @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Title)
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Group.Description)
-        @Html.TextBoxFor(m => m.Group.Description, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Group.Description)
+        @Html.LabelFor(m => m.DetailedDescription)
+        @Html.TextBoxFor(m => m.DetailedDescription, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.DetailedDescription)
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Group.MaxUserCapacity)
-        @Html.TextBoxFor(m => m.Group.MaxUserCapacity, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Group.MaxUserCapacity)
+        @Html.LabelFor(m => m.MaxUserCapacity)
+        @Html.TextBoxFor(m => m.MaxUserCapacity, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.MaxUserCapacity)
+    </div>
+    
+    <div class="form-group">
+        @Html.LabelFor(m => m.City)
+        @Html.TextBoxFor(m => m.City, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.City)
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Group.City)
-        @Html.TextBoxFor(m => m.Group.City, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Group.City)
+        @Html.LabelFor(m => m.Country)
+        @Html.TextBoxFor(m => m.Country, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Country)
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.Group.Country)
-        @Html.TextBoxFor(m => m.Group.Country, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Group.Country)
+        @Html.LabelFor(m => m.Continent)
+        @Html.TextBoxFor(m => m.Continent, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Continent)
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Group.Continent)
-        @Html.TextBoxFor(m => m.Group.Continent, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Group.Continent)
-    </div>
-
-    @Html.HiddenFor(m =>m.Group.Members)
-    @Html.HiddenFor(m => m.Group.Creator)
+    @Html.HiddenFor(m => m.GroupId);
     <button class="btn btn-primary" type="submit">Create Group</button>
 }

@@ -12,5 +12,6 @@ namespace GroupUp.ViewModels
         public List<Group> CreatedGroups { get; set; }
 
         public List<Group> ClosedGroups { get; set; }
+        public User User { get; set; }
     }
 }

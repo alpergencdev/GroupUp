@@ -8,11 +8,14 @@
 
 @using (Html.BeginForm("PostVerify", "Users", FormMethod.Post))
 {
-    <div class="form-group">
-        @Html.LabelFor(m => m.VerificationCode)
-        @Html.TextBoxFor(m => m.VerificationCode, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.VerificationCode)
-    </div>
+<div class="form-group">
+    @Html.LabelFor(m => m.VerificationCode)
+    @Html.TextBoxFor(m => m.VerificationCode, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.VerificationCode)
+    @Html.ActionLink("Resend verification email", "ResendVerificationEmail")
+</div>
+
+    
 
     <button class="btn btn-primary" type="submit">VERIFY ACCOUNT</button>
 }

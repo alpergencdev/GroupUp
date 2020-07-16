@@ -20,6 +20,23 @@
                 @(" ]")
             }
         </dd>
+        <dt>Trust Points:</dt>
+        <dd>
+            @Model.User.TrustPoints
+        </dd>
+        <dt>Email Verification:</dt>
+        <dd>
+            @(Model.User.IsVerified ? "Verified" : "Not verified")
+            @if (!Model.User.IsVerified)
+            {
+                @("[ ")
+                @Html.ActionLink("Verify", "VerifyUser", "Users")
+                @(" ]")
+            }
+        </dd>
+    </dl>
+    <dl class="dl-horizontal">
+        
         <dt>Parola:</dt>
         <dd>
             [
