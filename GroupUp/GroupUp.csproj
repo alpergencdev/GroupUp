@@ -468,6 +468,7 @@
     <Content Include="Views\Reports\ReportGroup.cshtml" />
     <Content Include="Views\Users\VerifyUser.cshtml" />
     <Content Include="Views\Users\IncreaseSecurityLevel.cshtml" />
+    <Content Include="Views\Groups\CreatorDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

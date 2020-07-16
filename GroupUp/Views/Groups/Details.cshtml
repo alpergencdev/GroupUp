@@ -15,6 +15,7 @@ else
     <p>Group Title: @Model.Group.Title</p>
     <p>Group Description: @Model.Group.Description</p>
     <p>Group Members:</p>
+    @Html.ActionLink("Report Group", "ReportGroup", "Reports", new {groupId = Model.Group.GroupId}, new{@class="btn btn-primary"})
     <ul>
         @foreach (var usr in @Model.Group.Members)
         {

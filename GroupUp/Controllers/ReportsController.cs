@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using GroupUp.Models;
 using GroupUp.ViewModels;
 using Microsoft.Ajax.Utilities;
+using Microsoft.AspNet.Identity;
 
 namespace GroupUp.Controllers
 {
@@ -26,6 +27,10 @@ namespace GroupUp.Controllers
                 return HttpNotFound();
             }
             var targetUser = _context.Users.Include(u => u.AspNetIdentity).SingleOrDefault(u => u.UserId == userId);
+            if (targetUser.AspNetIdentity.Id == User.Identity.GetUserId())
+            {
+                return HttpNotFound();
+            }
             var viewModel = new UserReportViewModel()
             {
                 UserReport = new UserReport()

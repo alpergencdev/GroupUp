@@ -31,12 +31,16 @@ namespace GroupUp.Controllers
         {
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
-            var targetGroup = _context.Groups.Include(g => g.Members).Include(g => g.Members.Select( u => u.AspNetIdentity) ).SingleOrDefault(g => g.GroupId == id);
+            var targetGroup = _context.Groups.Include(g => g.Creator).Include(g => g.Members).Include(g => g.Members.Select( u => u.AspNetIdentity) ).SingleOrDefault(g => g.GroupId == id);
             GroupDetailsViewModel gvm = new GroupDetailsViewModel()
             {
                 Group = targetGroup,
                 User = currentUser
             };
+            if (targetGroup != null && targetGroup.Creator == currentUser)
+            {
+                return View("CreatorDetails", gvm);
+            }
             if (targetGroup != null && targetGroup.Members.Contains(currentUser))
             {
                 return View("MemberDetails", gvm);
@@ -261,6 +265,7 @@ namespace GroupUp.Controllers
             return Content(lat + " " + lng);
             }
 
+        [Authorize]
         public ActionResult PrintLocation()
         {
             var location = (LocationProperties) Session["Location"];
@@ -272,6 +277,41 @@ namespace GroupUp.Controllers
 
             return Content($"Lat: {location.Lat} Lng: {location.Lng} City: {location.City} Country = {location.CountryLongName} Continent = {location.Continent}");
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Close(int? groupId)
+        {
+            if (!groupId.HasValue)
+            {
+                return HttpNotFound();
+            }
+            var targetGroup = _context.Groups.Include(g => g.Creator).SingleOrDefault(g => g.GroupId == groupId);
+
+            if (targetGroup == null)
+            {
+                return HttpNotFound();
+            }
+
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            if (targetGroup.Creator != currentUser)
+            {
+                return HttpNotFound();
+            }
+
+            targetGroup.IsClosed = true;
+            ClosedGroup newEntry = new ClosedGroup()
+            {
+                Group = targetGroup,
+                RatedUsers = new List<User>()
+            };
+            _context.ClosedGroups.Add(newEntry);
+            _context.SaveChanges();
+            return RedirectToAction("UserGroups", "Groups");
+        }
+
+        
     }
 
    
