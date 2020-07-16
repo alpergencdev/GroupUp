@@ -6,33 +6,25 @@
 
 <h2>Report User</h2>
 
-@if (Model.UserReport.TargetUser == null)
-{
-    <p>The user with the given ID does not exist.</p>
-}
-else
-{
+
+@{
     using (Html.BeginForm("PostUserReport", "Reports", FormMethod.Post))
     {
-        <p>
-            Report for @Html.ActionLink(Model.UserReport.TargetUser.AspNetIdentity.UserName, "Details", "Users",
-new { userId = Model.UserReport.TargetUser.UserId }, null)
-        </p>
+        <p>Report for @Html.ActionLink(Model.TargetUsername, "Details", "Users", new { userId = Model.ReportedUserId}, null)</p>
         <div class="form-group">
-            @Html.LabelFor(m => m.UserReport.Reason)
-            @Html.TextBoxFor(m => m.UserReport.Reason, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.UserReport.Reason)
+            @Html.LabelFor(m => m.Reason)
+            @Html.TextBoxFor(m => m.Reason, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Reason)
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(m => m.UserReport.DetailedDescription)
-            @Html.TextBoxFor(m => m.UserReport.DetailedDescription, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.UserReport.DetailedDescription)
+            @Html.LabelFor(m => m.Description)
+            @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Description)
         </div>
 
-        @Html.HiddenFor(m => m.UserReport.UserReportId)
-        @Html.HiddenFor(m => m.UserReport.TargetUser)
         @Html.HiddenFor(m => m.ReportedUserId)
+        @Html.HiddenFor(m => m.TargetUsername)
         <button class="btn btn-primary" type="submit">SUBMIT REPORT</button>
     }
 }

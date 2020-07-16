@@ -126,7 +126,7 @@ namespace GroupUp.Controllers
                 groupInDb.Description = viewModel.DetailedDescription;
             }
             _context.SaveChanges();
-            return View("Index");
+            return RedirectToAction("UserGroups", "Groups");
         }
 
         [Authorize]

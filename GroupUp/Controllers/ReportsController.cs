@@ -33,11 +33,10 @@ namespace GroupUp.Controllers
             }
             var viewModel = new UserReportViewModel()
             {
-                UserReport = new UserReport()
-                {
-                    TargetUser = targetUser
-                },
-                ReportedUserId = targetUser?.UserId ?? -1
+                Reason = "",
+                Description = "",
+                ReportedUserId = targetUser?.UserId ?? -1,
+                TargetUsername = targetUser?.AspNetIdentity.UserName ?? "-"
             };
             return View(viewModel);
         }
@@ -53,11 +52,10 @@ namespace GroupUp.Controllers
             var targetGroup = _context.Groups.SingleOrDefault(g => g.GroupId == groupId);
             var viewModel = new GroupReportViewModel()
             {
-                GroupReport = new GroupReport()
-                {
-                    TargetGroup = targetGroup
-                },
-                ReportedGroupId = targetGroup?.GroupId ?? -1
+                Reason = "",
+                Description = "",
+                ReportedGroupId = targetGroup?.GroupId ?? -1,
+                TargetGroupTitle = targetGroup.Title
             };
             return View(viewModel);
         }
@@ -68,28 +66,22 @@ namespace GroupUp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                int countOfErrors = 0;
-                foreach (var value in ModelState.Values)
-                {
-                    countOfErrors += value.Errors.Count;
-                    
-                }
-
-                // if only error is in the User field, we fix this error and add the user report.
-                if (countOfErrors <= 1 && ModelState.Values.ElementAt(1).Errors.Count == 1)
-                {
-                    var targetUser = _context.Users.Include(u => u.AspNetIdentity)
-                        .SingleOrDefault(u => u.UserId == viewModel.ReportedUserId);
-                    viewModel.UserReport.TargetUser = targetUser;
-                    _context.UserReports.Add(viewModel.UserReport);
-                    _context.SaveChanges();
-                    return RedirectToAction("UserGroups", "Groups");
-                }
                 return View("ReportUser", viewModel);
             }
             else
             {
-                _context.UserReports.Add(viewModel.UserReport);
+                var targetUser = _context.Users.SingleOrDefault(u => u.UserId == viewModel.ReportedUserId);
+                if (targetUser == null)
+                {
+                    return View("ReportUser", viewModel);
+                }
+                UserReport report = new UserReport()
+                {
+                    DetailedDescription = viewModel.Description,
+                    Reason = viewModel.Reason,
+                    TargetUser = targetUser
+                };
+                _context.UserReports.Add(report);
                 _context.SaveChanges();
                 return RedirectToAction("UserGroups", "Groups");
             }
@@ -101,27 +93,23 @@ namespace GroupUp.Controllers
         {
             if (!ModelState.IsValid)
             {
-                int countOfErrors = 0;
-                foreach (var value in ModelState.Values)
-                {
-                    countOfErrors += value.Errors.Count;
-
-                }
-
-                // if only error is in the User field, we fix this error and add the user report.
-                if (countOfErrors <= 1 && ModelState.Values.ElementAt(1).Errors.Count == 1)
-                {
-                    var targetGroup = _context.Groups.SingleOrDefault(g => g.GroupId == viewModel.ReportedGroupId);
-                    viewModel.GroupReport.TargetGroup = targetGroup;
-                    _context.GroupReports.Add(viewModel.GroupReport);
-                    _context.SaveChanges();
-                    return RedirectToAction("UserGroups", "Groups");
-                }
-                return View("ReportUser", viewModel);
+                return View("ReportGroup", viewModel);
             }
             else
             {
-                _context.GroupReports.Add(viewModel.GroupReport);
+                var targetGroup = _context.Groups.SingleOrDefault(g => g.GroupId == viewModel.ReportedGroupId);
+                if (targetGroup == null)
+                {
+                    return View("ReportGroup", viewModel);
+                }
+                var report = new GroupReport()
+                {
+                    
+                    DetailedDescription = viewModel.Description,
+                    Reason = viewModel.Reason,
+                    TargetGroup = targetGroup
+                };
+                _context.GroupReports.Add(report);
                 _context.SaveChanges();
                 return RedirectToAction("UserGroups", "Groups");
             }
