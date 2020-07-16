@@ -8,6 +8,7 @@ using GroupUp.Models.LocationModels;
 using GroupUp.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+// ReSharper disable SimplifyLinqExpression
 
 namespace GroupUp.Controllers
 {
@@ -168,6 +169,10 @@ namespace GroupUp.Controllers
                 return Content("There is no group with the given ID.");
             }
 
+            if (targetGroup.IsClosed)
+            {
+                return Content("This group is closed.");
+            }
             if (currentUser == null)
             {
                 return Content("Please log in.");
@@ -347,6 +352,7 @@ namespace GroupUp.Controllers
                 .Include(cg => cg.RatedUsers)
                 .Include(cg => cg.Group)
                 .Include(cg => cg.Group.Members)
+                .Include(cg => cg.Group.Members.Select(u => u.AspNetIdentity))
                 .SingleOrDefault(cg => cg.Group.GroupId == groupId);
 
             var aspNetId = User.Identity.GetUserId();
@@ -365,7 +371,100 @@ namespace GroupUp.Controllers
 
             return View(viewModel);
         }
-        
+
+        [Authorize]
+        public ActionResult Rate(int? groupId)
+        {
+            if (!groupId.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.AspNetIdentity)
+                .Include( g=> g.Groups)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+
+            if (currentUser == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (!currentUser.Groups.Any(g => g.GroupId == groupId))
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                var targetGroup = _context.Groups.Include(g => g.Members)
+                    .Include(g => g.Members.Select(u => u.AspNetIdentity))
+                    .SingleOrDefault(g => g.GroupId == groupId);
+                if (targetGroup == null)
+                {
+                    return HttpNotFound();
+                }
+
+                if (!targetGroup.IsClosed)
+                {
+                    return HttpNotFound();
+                }
+                else
+                {
+                    var viewModel = new GroupRatingViewModel()
+                    {
+                        UserRatings = new Dictionary<string, int>(),
+                        GroupId = targetGroup.GroupId
+                    };
+                    foreach (var member in targetGroup.Members)
+                    {
+                        if (member.UserId != currentUser.UserId)
+                        {
+                            viewModel.UserRatings.Add(member.AspNetIdentity.UserName, 0);
+                        }
+                    }
+                    return View(viewModel);
+                }
+            }
+
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult PostRating(GroupRatingViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Rate", viewModel);
+            }
+            else
+            {
+                foreach (var kvp in viewModel.UserRatings)
+                {
+                    var user = _context.Users.SingleOrDefault(u => u.AspNetIdentity.UserName == kvp.Key);
+                    if (user == null)
+                    {
+                        return HttpNotFound();
+                    }
+
+                    user.TrustPoints += (kvp.Value - 5) * 5;
+                }
+
+                var closedGroup = _context.ClosedGroups
+                    .Include(cg => cg.RatedUsers)
+                    .SingleOrDefault(cg => cg.Group.GroupId == viewModel.GroupId);
+
+                var aspNetId = User.Identity.GetUserId();
+                var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+                if (currentUser == null || closedGroup == null)
+                {
+                    return HttpNotFound();
+                }
+                closedGroup.RatedUsers.Add(currentUser);
+                _context.SaveChanges();
+                return RedirectToAction("UserGroups");
+            }
+        }
+
     }
 
    

@@ -36,6 +36,6 @@ else
 </ul>
 
     <hr />
-    <button class="btn btn-primary">Rate Group</button>
+    @Html.ActionLink("Rate Group", "Rate", new{groupId = Model.ClosedGroup.Group.GroupId});
 
 }
