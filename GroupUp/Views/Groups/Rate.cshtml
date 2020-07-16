@@ -8,7 +8,7 @@
 <p>Please rate the following users between 0-10 according to how well of a group member they were.</p>
 @using (Html.BeginForm("PostRating", "Groups", FormMethod.Post))
 {
-    @Html.ValidationSummary();
+    @Html.ValidationSummary()
     foreach (var member in Model.UserRatings)
     {
         <div class="form-group">
