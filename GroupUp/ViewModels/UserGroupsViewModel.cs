@@ -10,5 +10,7 @@ namespace GroupUp.ViewModels
     {
         public List<Group> JoinedGroups { get; set; }
         public List<Group> CreatedGroups { get; set; }
+
+        public List<Group> ClosedGroups { get; set; }
     }
 }

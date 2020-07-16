@@ -1,0 +1,41 @@
+﻿@using GroupUp.Controllers
+@model GroupUp.ViewModels.ClosedGroupViewModel
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Closed Group Details</h2>
+
+@if (Model.ClosedGroup.Group == null)
+{
+    <p>The group with the given ID does not exist.</p>
+}
+else
+{
+    <p>Group Title: @Model.ClosedGroup.Group.Title</p>
+    <p>Group Description: @Model.ClosedGroup.Group.Description</p>
+    <p>Group Members:</p>
+    @Html.ActionLink("Report Group", "ReportGroup", "Reports", new { groupId = Model.ClosedGroup.Group.GroupId }, new { @class = "btn btn-primary" })
+<ul>
+    @foreach (var usr in @Model.ClosedGroup.Group.Members)
+    {
+        if (usr.UserId != Model.User.UserId)
+        {
+            <li>
+                @usr.AspNetIdentity.UserName | @Html.ActionLink("View User", "Details", "Users", new { userId = @usr.UserId }, null)
+                | @Html.ActionLink("Report User", "ReportUser", "Reports", new { userId = usr.UserId }, null)
+            </li>
+        }
+        else
+        {
+            <li>
+                @usr.AspNetIdentity.UserName
+            </li>
+        }
+    }
+</ul>
+
+    <hr />
+    <button class="btn btn-primary">Rate Group</button>
+
+}

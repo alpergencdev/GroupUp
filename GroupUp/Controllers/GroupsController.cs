@@ -29,9 +29,14 @@ namespace GroupUp.Controllers
         [Authorize]
         public ActionResult Details(int id)
         {
+            
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             var targetGroup = _context.Groups.Include(g => g.Creator).Include(g => g.Members).Include(g => g.Members.Select( u => u.AspNetIdentity) ).SingleOrDefault(g => g.GroupId == id);
+            if (targetGroup.IsClosed)
+            {
+                return RedirectToAction("ClosedDetails", new {groupId = targetGroup.GroupId});
+            }
             GroupDetailsViewModel gvm = new GroupDetailsViewModel()
             {
                 Group = targetGroup,
@@ -45,6 +50,8 @@ namespace GroupUp.Controllers
             {
                 return View("MemberDetails", gvm);
             }
+
+            
             return View(gvm);
         }
 
@@ -224,10 +231,28 @@ namespace GroupUp.Controllers
             var joinedGroups = _context.Groups.Include(g => g.Members).Include(g => g.Creator).ToList();
             joinedGroups.RemoveAll(g => currentUser != null && (!g.Members.Contains(currentUser) || g.Creator.UserId == currentUser.UserId || g.IsClosed));
 
+            var closedGroups = _context.Groups.Include(g => g.Members).Where(g => g.IsClosed).ToList();
+
+            var closedUserGroups = new List<Group>();
+            foreach (var group in closedGroups)
+            {
+                if (group.Members.Contains(currentUser))
+                {
+                    var ratedUsers = _context.ClosedGroups.Include(cg => cg.RatedUsers)
+                        .SingleOrDefault(cg => cg.Group.GroupId == group.GroupId)
+                        ?.RatedUsers;
+                    if (ratedUsers != null && !ratedUsers.Contains(currentUser))
+                    {
+                        closedUserGroups.Add(group);
+                    }
+                }
+            }
             var viewModel = new UserGroupsViewModel()
             {
                 CreatedGroups = createdGroups.ToList(),
-                JoinedGroups = joinedGroups.ToList()
+                JoinedGroups = joinedGroups.ToList(),
+                ClosedGroups = closedUserGroups
+                
             };
 
             return View(viewModel);
@@ -311,6 +336,35 @@ namespace GroupUp.Controllers
             return RedirectToAction("UserGroups", "Groups");
         }
 
+        public ActionResult ClosedDetails(int? groupId)
+        {
+            if (!groupId.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var closedGroupEntry = _context.ClosedGroups
+                .Include(cg => cg.RatedUsers)
+                .Include(cg => cg.Group)
+                .Include(cg => cg.Group.Members)
+                .SingleOrDefault(cg => cg.Group.GroupId == groupId);
+
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users.Include(u => u.AspNetIdentity)
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            if (closedGroupEntry == null)
+            {
+                return HttpNotFound();
+            }
+            var viewModel = new ClosedGroupViewModel()
+            {
+                ClosedGroup = closedGroupEntry,
+                UserAlreadyRated = closedGroupEntry.RatedUsers.Contains(currentUser),
+                User = currentUser
+            };
+
+            return View(viewModel);
+        }
         
     }
 

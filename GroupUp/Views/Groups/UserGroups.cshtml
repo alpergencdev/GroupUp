@@ -48,3 +48,23 @@
     }
 }
 
+<h2>Closed Groups</h2>
+@{
+    if (Model.ClosedGroups.Count <= 0)
+    {
+        <p>You have no closed groups pending a rating from you.</p>
+    }
+    else
+    {
+        foreach (var group in Model.ClosedGroups)
+        {
+            <hr />
+            <div>
+                <h3> @group.Title</h3>
+                <p> @group.Description</p>
+                @Html.ActionLink("View Group →", "Details", "Groups", new { id = group.GroupId }, new { @class = "btn btn-primary" })
+            </div>
+        }
+    }
+}
+

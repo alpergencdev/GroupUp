@@ -387,6 +387,7 @@
     <Compile Include="Models\UserReport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\ClosedGroupViewModel.cs" />
     <Compile Include="ViewModels\GetLocationViewModel.cs" />
     <Compile Include="ViewModels\GroupReportViewModel.cs" />
     <Compile Include="ViewModels\GroupRequestsViewModel.cs" />
@@ -469,6 +470,7 @@
     <Content Include="Views\Users\VerifyUser.cshtml" />
     <Content Include="Views\Users\IncreaseSecurityLevel.cshtml" />
     <Content Include="Views\Groups\CreatorDetails.cshtml" />
+    <Content Include="Views\Groups\ClosedDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
