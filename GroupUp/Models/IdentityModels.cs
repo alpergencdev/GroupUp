@@ -28,6 +28,7 @@ namespace GroupUp.Models
         public DbSet<UserReport> UserReports { get; set; }
         public DbSet<GroupReport> GroupReports { get; set; }
 
+        public DbSet<ClosedGroup> ClosedGroups { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
@@ -55,8 +56,12 @@ namespace GroupUp.Models
                     m.MapLeftKey("GroupId");
                     m.MapRightKey("UserId");
                     });
+
             modelBuilder.Entity<Group>()
                 .HasRequired(g => g.Creator);
+
+            modelBuilder.Entity<ClosedGroup>()
+                .HasMany(cg => cg.RatedUsers);
         }
     }
 }

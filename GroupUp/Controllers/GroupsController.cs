@@ -132,10 +132,10 @@ namespace GroupUp.Controllers
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             var groupsToShow = _context.Groups.Include(g => g.Members)
-                .Where(g => g.Members.Count < g.MaxUserCapacity).ToList(); // && CORRESPONDING TO USER'S LOCATION
+                .Where(g => g.Members.Count < g.MaxUserCapacity && !g.IsClosed).ToList();
             var viewModel = new GroupRequestsViewModel()
             {
-                Groups = groupsToShow,
+                Groups = groupsToShow, // location and membership checks are done inside razorpages.
                 User = currentUser,
                 Location = (LocationProperties) Session["Location"]
             };
@@ -215,10 +215,10 @@ namespace GroupUp.Controllers
                 .SingleOrDefault( u => u.AspNetIdentity.Id == aspNetId);
 
             var createdGroups = _context.Groups.Include(g => g.Members)
-                .Where(g => g.Creator.UserId == currentUser.UserId).ToList();
+                .Where(g => g.Creator.UserId == currentUser.UserId && !g.IsClosed).ToList();
 
             var joinedGroups = _context.Groups.Include(g => g.Members).Include(g => g.Creator).ToList();
-            joinedGroups.RemoveAll(g => currentUser != null && (!g.Members.Contains(currentUser) || g.Creator.UserId == currentUser.UserId));
+            joinedGroups.RemoveAll(g => currentUser != null && (!g.Members.Contains(currentUser) || g.Creator.UserId == currentUser.UserId || g.IsClosed));
 
             var viewModel = new UserGroupsViewModel()
             {

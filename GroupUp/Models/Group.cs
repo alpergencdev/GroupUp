@@ -30,5 +30,7 @@ namespace GroupUp.Models
         [Required] public IList<User> Members { get; set; }
 
         public string ChatLog { get; set; }
+
+        public bool IsClosed { get; set; }
     }
 }
