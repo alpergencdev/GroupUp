@@ -92,6 +92,7 @@ namespace GroupUp.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
         public ActionResult PostLockoutDate(ModeratorLockoutViewModel viewModel)
         {
             if (!ModelState.IsValid)

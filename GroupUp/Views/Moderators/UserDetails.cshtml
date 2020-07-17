@@ -7,19 +7,20 @@
 
 <h2>User Details</h2>
 
-<p>User ID: @Model.User.UserId</p>
-<p>Username: @Model.User.AspNetIdentity.UserName</p>
-<p>Security Level: @Model.User.SecurityLevel</p>
-<p>Trust Points: @Model.User.TrustPoints</p>
-<p>Contact Info: @Model.User.ContactInfo</p>
+<p><strong>User ID:</strong> @Model.User.UserId</p>
+<p><strong>Username:</strong> @Model.User.AspNetIdentity.UserName</p>
+<p><strong>Security Level:</strong> @Model.User.SecurityLevel</p>
+<p><strong>Trust Points:</strong> @Model.User.TrustPoints</p>
+<p><strong>Contact Info:</strong> @Model.User.ContactInfo</p>
 <p>
-    Is Blocked: @(Model.User.AspNetIdentity.LockoutEndDateUtc == null || Model.User.AspNetIdentity.LockoutEndDateUtc < DateTime.Now ? "No" : "Yes")
+    <strong>Is Blocked:</strong> @(Model.User.AspNetIdentity.LockoutEndDateUtc == null || Model.User.AspNetIdentity.LockoutEndDateUtc < DateTime.Now ? "No" : "Yes")
     @if (!(Model.User.AspNetIdentity.LockoutEndDateUtc == null || Model.User.AspNetIdentity.LockoutEndDateUtc < DateTime.Now))
     {
         <span>(Block End Date: @Model.User.AspNetIdentity.LockoutEndDateUtc)</span>
     }
-    </p>
-<p>Joined Groups:</p>
+</p>
+<hr/>
+<p><strong>Joined Groups:</strong></p>
 <ul>
     @foreach (var group in Model.User.Groups)
     {
@@ -29,8 +30,8 @@
         }
     }
 </ul>
-
-<p>Created Groups:</p>
+<hr />
+<p><strong>Created Groups:</strong></p>
 <ul>
     @foreach (var group in Model.User.Groups)
     {
@@ -40,8 +41,8 @@
         }
     }
 </ul>
-
-<p>Closed Groups:</p>
+<hr />
+<p><strong>Closed Groups:</strong></p>
 <ul>
     @foreach (var group in Model.User.Groups)
     {
@@ -51,7 +52,7 @@
         }
     }
 </ul>
-
+<hr />
 <p>Change the lockout date to a future date to block the user, or to a previous date to unblock them.</p>
 @Html.ActionLink("Change Lockout Date", "ChangeLockoutDate",
      new{userId = Model.User.UserId}, new{@class="btn btn-primary"})
