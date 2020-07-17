@@ -127,10 +127,10 @@ namespace GroupUp.Controllers
 
         public ActionResult Groups()
         {
-            var users = _context.Users.Include(u => u.AspNetIdentity).ToList();
-            var viewModel = new ModeratorUsersViewModel()
+            var groups = _context.Groups.ToList();
+            var viewModel = new ModeratorGroupsViewModel()
             {
-                Users = users
+                Groups = groups
             };
 
             return View(viewModel);
