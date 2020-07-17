@@ -124,5 +124,16 @@ namespace GroupUp.Controllers
                 return RedirectToAction("UserDetails", new {userId = viewModel.UserId});
             }
         }
+
+        public ActionResult Groups()
+        {
+            var users = _context.Users.Include(u => u.AspNetIdentity).ToList();
+            var viewModel = new ModeratorUsersViewModel()
+            {
+                Users = users
+            };
+
+            return View(viewModel);
+        }
     }
 }
