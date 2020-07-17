@@ -1,4 +1,4 @@
-﻿<div class="navbar navbar-inverse navbar-fixed-top">
+﻿<div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -6,15 +6,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            @Html.ActionLink("GroupUp Moderator", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            @Html.ActionLink("GroupUp Moderator", "Index", "Moderators", new { area = "" }, new { @class = "navbar-brand" })
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Users", "Users", "Moderators")</li>
-                <li>@Html.ActionLink("Groups", "UserGroups", "Groups")</li>
-                <li>@Html.ActionLink("Closed Groups", "UserGroups", "Groups")</li>
-                <li>@Html.ActionLink("User Reports", "UserGroups", "Groups")</li>
-                <li>@Html.ActionLink("Group Reports", "UserGroups", "Groups")</li>
+                <li>@Html.ActionLink("Groups", "Groups", "Moderators")</li>
+                <li>@Html.ActionLink("User Reports", "UserReports", "Moderators")</li>
+                <li>@Html.ActionLink("Group Reports", "GroupReports", "Moderators")</li>
                 <li>@Html.ActionLink("Back to User Mode", "UserGroups", "Groups")</li>
             </ul>
             @Html.Partial("_LoginPartial")

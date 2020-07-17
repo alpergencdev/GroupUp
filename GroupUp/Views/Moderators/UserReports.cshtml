@@ -1,0 +1,38 @@
+﻿@model GroupUp.ViewModels.ModeratorUserReportsViewModel
+@{
+    ViewBag.Title = "UserReports";
+    Layout = "~/Views/Shared/_ModeratorLayout.cshtml";
+}
+
+<h2>User Reports</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>
+            Report ID
+        </th>
+        <th>
+            Target Username
+        </th>
+        <th>
+            Details
+        </th>
+    </tr>
+    @foreach (var report in Model.UserReports)
+    {
+        <tr>
+            <td>
+                @report.UserReportId
+            </td>
+
+            <td>
+                @report.TargetUser.AspNetIdentity.UserName
+            </td>
+            
+            <td>
+                @Html.ActionLink("View Details", "UserReportDetails", new {userReportId = report.UserReportId})
+            </td>
+        </tr>
+    }
+</table>
+

@@ -1,0 +1,17 @@
+﻿@model GroupUp.ViewModels.ModeratorURDetailsViewModel
+@{
+    ViewBag.Title = "UserReportDetails";
+    Layout = "~/Views/Shared/_ModeratorLayout.cshtml";
+}
+
+<h2>User Report Details</h2>
+<p>Target User: @Model.UserReport.TargetUser.AspNetIdentity.UserName</p>
+<p><strong>Reason:</strong>@Model.UserReport.Reason</p>
+<p><strong>Description:</strong></p>
+<p> @Model.UserReport.DetailedDescription</p>
+@Html.ActionLink("Go to User", "UserDetails",
+    new { userId = Model.UserReport.TargetUser.UserId }, new { @class = "btn btn-primary" })
+@Html.ActionLink("Delete Report", "DeleteUserReport",
+    new { userReportId = Model.UserReport.UserReportId }, new { @class = "btn btn-primary" })
+
+

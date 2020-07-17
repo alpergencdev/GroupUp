@@ -1,0 +1,15 @@
+﻿@model GroupUp.ViewModels.ModeratorGRDetailsViewModel
+@{
+    ViewBag.Title = "GroupReportDetails";
+    Layout = "~/Views/Shared/_ModeratorLayout.cshtml";
+}
+
+<h2>Group Report Details</h2>
+<p>Target Group: @Model.GroupReport.TargetGroup.Title</p>
+<p><strong>Reason:</strong>@Model.GroupReport.Reason</p>
+<p><strong>Description:</strong></p>
+<p> @Model.GroupReport.DetailedDescription</p>
+@Html.ActionLink("Go to Group", "GroupDetails",
+    new { groupId = Model.GroupReport.TargetGroup.GroupId }, new { @class = "btn btn-primary" })
+@Html.ActionLink("Delete Report", "DeleteGroupReport",
+    new { groupReportId = Model.GroupReport.GroupReportId }, new { @class = "btn btn-primary" })

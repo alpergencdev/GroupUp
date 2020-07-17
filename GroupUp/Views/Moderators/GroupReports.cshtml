@@ -1,0 +1,36 @@
+﻿@model GroupUp.ViewModels.ModeratorGroupReportsViewModel
+@{
+    ViewBag.Title = "GroupReports";
+    Layout = "~/Views/Shared/_ModeratorLayout.cshtml";
+}
+
+<h2>Group Reports</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>
+            Report ID
+        </th>
+        <th>
+            Target Group Title
+        <th>
+            Details
+        </th>
+    </tr>
+    @foreach (var report in Model.GroupReports)
+    {
+        <tr>
+            <td>
+                @report.GroupReportId
+            </td>
+
+            <td>
+                @report.TargetGroup.Title
+            </td>
+
+            <td>
+                @Html.ActionLink("View Details", "GroupReportDetails", new { groupReportId = report.GroupReportId })
+            </td>
+        </tr>
+    }
+</table>

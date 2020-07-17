@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using GroupUp.Models;
 using GroupUp.ViewModels;
+using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 
 namespace GroupUp.Controllers
 {
@@ -134,6 +136,212 @@ namespace GroupUp.Controllers
             };
 
             return View(viewModel);
+        }
+
+        public ActionResult GroupDetails(int? groupId)
+        {
+            if (!groupId.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var targetGroup = _context.Groups
+                .Include(g => g.Members)
+                .Include(g => g.Members.Select(u => u.AspNetIdentity))
+                .Include(g => g.Creator)
+                .SingleOrDefault(g => g.GroupId == groupId);
+
+            if (targetGroup == null)
+            {
+                return HttpNotFound();
+            }
+
+            var viewModel = new ModeratorGroupDetailsViewModel()
+            {
+                Group = targetGroup
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteGroup(int? groupId)
+        {
+            if (!groupId.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var targetGroup = _context.Groups
+                .Include(g => g.Members)
+                .Include(g => g.Members.Select(u => u.AspNetIdentity))
+                .Include(g => g.Creator)
+                .SingleOrDefault(g => g.GroupId == groupId);
+
+            if (targetGroup == null)
+            {
+                return HttpNotFound();
+            }
+
+            // if there are any closed group objects targeting this group object, delete them.
+            if (_context.ClosedGroups.Any(cg => cg.Group.GroupId == targetGroup.GroupId))
+            {
+                _context.ClosedGroups.RemoveRange(
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    _context.ClosedGroups.Where(cg => cg.Group.GroupId == targetGroup.GroupId));
+            }
+
+            // if there are any group report objects targeting this group object, delete them.
+            if (_context.GroupReports.Any(gr => gr.TargetGroup.GroupId == targetGroup.GroupId))
+            {
+                _context.GroupReports.RemoveRange(
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    _context.GroupReports.Where(gr => gr.TargetGroup.GroupId == targetGroup.GroupId));
+            }
+
+            // keep removing first item until there are no more members.
+            while (targetGroup.Members.Count > 0)
+            {
+                targetGroup.Members.RemoveAt(0);
+            }
+
+            // finally, delete group from database.
+            _context.Groups.Remove(targetGroup);
+            _context.SaveChanges();
+            return RedirectToAction("Groups");
+        }
+
+        public ActionResult UserReports()
+        {
+            var aspNetId = User.Identity.GetUserId();
+            var currentUserId = _context.Users
+                .Where(u => u.AspNetIdentity.Id == aspNetId)
+                .Select(u => u.UserId)
+                .SingleOrDefault();
+
+            var userReports = _context.UserReports
+                .Include(ur => ur.TargetUser)
+                .Include(ur => ur.TargetUser.AspNetIdentity)
+                .Where(ur => ur.TargetUser.UserId != currentUserId).ToList();
+
+            var viewModel = new ModeratorUserReportsViewModel()
+            {
+                UserReports = userReports
+            };
+
+            return View(viewModel);
+        }
+
+        public ActionResult UserReportDetails(int? userReportId)
+        {
+            if (!userReportId.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var targetReport = _context.UserReports
+                .Include(ur => ur.TargetUser)
+                .Include(ur => ur.TargetUser.AspNetIdentity)
+                .SingleOrDefault(ur => ur.UserReportId == userReportId);
+
+            if (targetReport == null)
+            {
+                return HttpNotFound();
+            }
+
+            var viewModel = new ModeratorURDetailsViewModel()
+            {
+                UserReport = targetReport
+            };
+
+            return View(viewModel);
+        }
+
+        public ActionResult DeleteUserReport(int? userReportId)
+        {
+            if (!userReportId.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var targetReport = _context.UserReports
+                .Include(ur => ur.TargetUser)
+                .Include(ur => ur.TargetUser.AspNetIdentity)
+                .SingleOrDefault(ur => ur.UserReportId == userReportId);
+
+            if (targetReport == null)
+            {
+                return HttpNotFound();
+            }
+
+            _context.UserReports.Remove(targetReport);
+            _context.SaveChanges();
+            return RedirectToAction("UserReports");
+        }
+
+        public ActionResult GroupReports()
+        {
+            var aspNetId = User.Identity.GetUserId();
+            var currentUser = _context.Users
+                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+
+            var groupReports = _context.GroupReports
+                .Include(gr => gr.TargetGroup)
+                .Include(gr => gr.TargetGroup.Members)
+                .ToList();
+
+            groupReports.RemoveAll(gr => gr.TargetGroup.Members.Contains(currentUser));
+            var viewModel = new ModeratorGroupReportsViewModel()
+            {
+                GroupReports = groupReports
+            };
+
+            return View(viewModel);
+        }
+
+        public ActionResult GroupReportDetails(int? groupReportId)
+        {
+            if (!groupReportId.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var targetReport = _context.GroupReports
+                .Include(gr => gr.TargetGroup)
+                .SingleOrDefault(gr => gr.GroupReportId == groupReportId);
+
+            if (targetReport == null)
+            {
+                return HttpNotFound();
+            }
+
+            var viewModel = new ModeratorGRDetailsViewModel()
+            {
+                GroupReport = targetReport
+            };
+
+            return View(viewModel);
+        }
+
+        public ActionResult DeleteGroupReport(int? groupReportId)
+        {
+            if (!groupReportId.HasValue)
+            {
+                return HttpNotFound();
+            }
+
+            var targetReport = _context.GroupReports
+                .Include(gr => gr.TargetGroup)
+                .SingleOrDefault(gr => gr.GroupReportId == groupReportId);
+
+            if (targetReport == null)
+            {
+                return HttpNotFound();
+            }
+
+            _context.GroupReports.Remove(targetReport);
+            _context.SaveChanges();
+            return RedirectToAction("GroupReports");
         }
     }
 }

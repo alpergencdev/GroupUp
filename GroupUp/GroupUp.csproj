@@ -400,9 +400,14 @@
     <Compile Include="ViewModels\GroupRequestsViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
     <Compile Include="ViewModels\ISLViewModel.cs" />
+    <Compile Include="ViewModels\ModeratorGRDetailsViewModel.cs" />
+    <Compile Include="ViewModels\ModeratorGroupDetailsViewModel.cs" />
+    <Compile Include="ViewModels\ModeratorGroupReportsViewModel.cs" />
     <Compile Include="ViewModels\ModeratorGroupsViewModel.cs" />
     <Compile Include="ViewModels\ModeratorLockoutViewModel.cs" />
+    <Compile Include="ViewModels\ModeratorURDetailsViewModel.cs" />
     <Compile Include="ViewModels\ModeratorUserDetailsViewModel.cs" />
+    <Compile Include="ViewModels\ModeratorUserReportsViewModel.cs" />
     <Compile Include="ViewModels\ModeratorUsersViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserEditViewModel.cs" />
@@ -492,6 +497,12 @@
     <Content Include="Views\Moderators\UserDetails.cshtml" />
     <Content Include="Views\Moderators\ChangeLockoutDate.cshtml" />
     <Content Include="Views\Moderators\Groups.cshtml" />
+    <Content Include="Views\Moderators\ClosedGroups.cshtml" />
+    <Content Include="Views\Moderators\GroupDetails.cshtml" />
+    <Content Include="Views\Moderators\UserReports.cshtml" />
+    <Content Include="Views\Moderators\UserReportDetails.cshtml" />
+    <Content Include="Views\Moderators\GroupReports.cshtml" />
+    <Content Include="Views\Moderators\GroupReportDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

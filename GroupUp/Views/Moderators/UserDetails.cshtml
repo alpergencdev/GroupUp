@@ -26,7 +26,7 @@
     {
         if (!group.IsClosed && group.Creator.UserId != Model.User.UserId)
         {
-            <li> @group.Title</li>
+            <li> @Html.ActionLink(group.Title,"GroupDetails", new {groupId = group.GroupId})</li>
         }
     }
 </ul>
@@ -37,7 +37,7 @@
     {
         if (!group.IsClosed && group.Creator.UserId == Model.User.UserId)
         {
-            <li> @group.Title</li>
+            <li> @Html.ActionLink(group.Title, "GroupDetails", new { groupId = group.GroupId })</li>
         }
     }
 </ul>
@@ -48,7 +48,7 @@
     {
         if (group.IsClosed)
         {
-            <li> @group.Title</li>
+            <li> @Html.ActionLink(group.Title, "GroupDetails", new { groupId = group.GroupId })</li>
         }
     }
 </ul>

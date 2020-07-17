@@ -1,0 +1,33 @@
+﻿@model GroupUp.ViewModels.ModeratorGroupDetailsViewModel
+@{
+    ViewBag.Title = "GroupDetails";
+    Layout = "~/Views/Shared/_ModeratorLayout.cshtml";
+}
+
+<h2>Group Details</h2>
+<p><strong>Group ID:</strong> @Model.Group.GroupId</p>
+<p><strong>Title:</strong> @Model.Group.Title</p>
+<p><strong>Description:</strong> @Model.Group.Description</p>
+<p><strong>Status:</strong> @(Model.Group.IsClosed ? "Closed" : "Open")</p>
+<p><strong>City:</strong> @Model.Group.City</p>
+<p><strong>Country:</strong> @Model.Group.Country</p>
+<p><strong>Continent:</strong> @Model.Group.Continent</p>
+<p><strong>Maximum Number of Users:</strong> @Model.Group.MaxUserCapacity</p>
+<p><strong>Members:</strong></p>
+<ul>
+    @foreach (var user in Model.Group.Members)
+    {
+        <li>
+            @Html.ActionLink(user.AspNetIdentity.UserName, "UserDetails", new { userId = user.UserId })
+        @((Model.Group.Creator.UserId == user.UserId) ? " (Creator)" : null)
+    </li>
+}
+</ul>
+@using (Html.BeginForm("DeleteGroup", "Moderators", new {groupId = Model.Group.GroupId}, FormMethod.Post))
+{
+    <button class="btn btn-primary" type="submit">Delete Group</button>
+}
+<p><strong>Chat Log</strong></p>
+<div style="max-height: 500px; border:1px solid #ccc;overflow:auto;"><pre id="chatbox">@Html.Raw(Model.Group.ChatLog)</pre> </div>
+
+

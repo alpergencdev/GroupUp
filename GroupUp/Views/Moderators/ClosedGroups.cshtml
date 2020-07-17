@@ -1,10 +1,10 @@
-﻿@model GroupUp.ViewModels.ModeratorGroupsViewModel
+﻿
 @{
-    ViewBag.Title = "Groups";
+    ViewBag.Title = "ClosedGroups";
     Layout = "~/Views/Shared/_ModeratorLayout.cshtml";
 }
 
-<h2>Groups</h2>
+<h2>Closed Groups</h2>
 
 <table class="table table-bordered">
     <tr>
@@ -23,7 +23,7 @@
                 @group.Title
             </td>
             <td>
-                @Html.ActionLink("View Details", "GroupDetails", new{groupId = group.GroupId})
+                View Details
             </td>
         </tr>
     }
