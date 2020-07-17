@@ -30,5 +30,7 @@ namespace GroupUp.Models
 
         public bool IsVerified { get; set; }
 
+        public bool IsModerator { get; set; }
+
     }
 }

@@ -44,7 +44,7 @@
                 @("[ ")
                 @Html.ActionLink("Verify", "VerifyUser", "Users")
                 @(" ]")
-            } 
+            }
         </dd>
         <dt></dt>
         <dd>
@@ -52,6 +52,15 @@
             @Html.ActionLink("Edit Personal Information", "Edit", "Users")
             @(" ]")
         </dd>
+        @if (Model.User.IsModerator)
+        {
+            <dt></dt>
+            <dd>
+                @("[ ")
+                @Html.ActionLink("Access Moderator Privileges", "Edit", "Users")
+                @(" ]")
+            </dd>
+        }
     </dl>
     <dl class="dl-horizontal">
 
@@ -126,7 +135,7 @@
                 <input type="submit" value="Etkinleştir" class="btn btn-link" />
                 </text>
             }
-        }*@
-        </dd>
+        }
+        </dd>*@
     </dl>
 </div>

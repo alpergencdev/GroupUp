@@ -329,6 +329,7 @@
     <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ModeratorsController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
@@ -369,6 +370,10 @@
     <Compile Include="Migrations\202007161044034_AddClosedGroupsObject.cs" />
     <Compile Include="Migrations\202007161044034_AddClosedGroupsObject.Designer.cs">
       <DependentUpon>202007161044034_AddClosedGroupsObject.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007171031573_AddIsModeratorFieldToUser.cs" />
+    <Compile Include="Migrations\202007171031573_AddIsModeratorFieldToUser.Designer.cs">
+      <DependentUpon>202007171031573_AddIsModeratorFieldToUser.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -476,9 +481,12 @@
     <Content Include="Views\Groups\Rate.cshtml" />
     <Content Include="Views\Groups\Edit.cshtml" />
     <Content Include="Views\Users\Edit.cshtml" />
+    <Content Include="Views\Shared\_ModeratorNavbar.cshtml" />
+    <Content Include="Views\Shared\_ModeratorLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Moderators\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -520,6 +528,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007161044034_AddClosedGroupsObject.resx">
       <DependentUpon>202007161044034_AddClosedGroupsObject.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007171031573_AddIsModeratorFieldToUser.resx">
+      <DependentUpon>202007171031573_AddIsModeratorFieldToUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
