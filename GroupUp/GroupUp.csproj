@@ -503,6 +503,7 @@
     <Content Include="Views\Moderators\UserReportDetails.cshtml" />
     <Content Include="Views\Moderators\GroupReports.cshtml" />
     <Content Include="Views\Moderators\GroupReportDetails.cshtml" />
+    <Content Include="Views\Account\SuccessfulSecurityLevelIncrease.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

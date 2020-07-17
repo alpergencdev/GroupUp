@@ -22,11 +22,6 @@ namespace GroupUp.Controllers
             UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._context));
         }
         // GET: Groups
-        public ActionResult Index()
-        {
-            return View();
-        }
-
         [Authorize]
         public ActionResult Details(int id)
         {
@@ -152,9 +147,12 @@ namespace GroupUp.Controllers
         }
 
         [Authorize(Roles="SecurityLevel1")]
-        [HttpPost]
         public ActionResult Join(int groupId)
         {
+            if (!User.IsInRole("SecurityLevel1"))
+            {
+                return HttpNotFound();
+            }
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.Include(u => u.Groups)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
@@ -467,9 +465,12 @@ namespace GroupUp.Controllers
         }
 
         [Authorize(Roles="SecurityLevel1")]
-        [HttpPost]
         public ActionResult Leave(int? groupId)
         {
+            if (!User.IsInRole("SecurityLevel1"))
+            {
+                return HttpNotFound();
+            }
             if (!groupId.HasValue)
             {
                 return HttpNotFound();
@@ -487,6 +488,7 @@ namespace GroupUp.Controllers
         [Authorize(Roles="SecurityLevel2")]
         public ActionResult Edit(int? groupId)
         {
+            
             if (!groupId.HasValue)
             {
                 return HttpNotFound();
@@ -516,7 +518,7 @@ namespace GroupUp.Controllers
             return HttpNotFound();
         }
 
-        [Authorize(Roles = "SecurityLevel2")]
+        [Authorize]
         public ActionResult Kick(int? userId, int? groupId)
         {
             if (!userId.HasValue || !groupId.HasValue)
@@ -535,7 +537,9 @@ namespace GroupUp.Controllers
                 var targetUser = _context.Users.SingleOrDefault(u => u.UserId == userId);
                 if (targetGroup.Members.Remove(targetUser))
                 {
-                    return RedirectToAction("Details", new {groupId = groupId});
+                    _context.SaveChanges();
+                    // ReSharper disable once RedundantAnonymousTypePropertyName
+                    return RedirectToAction("Details", new {id = groupId});
                 }
                 return HttpNotFound();
             }

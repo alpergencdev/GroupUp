@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 using GroupUp.Models;
 using Newtonsoft.Json;
 
@@ -21,6 +22,7 @@ namespace GroupUp.ViewModels
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
+
             var dict = (Dictionary<string, int>) validationContext.ObjectInstance;
             foreach (var kvp in dict)
             {

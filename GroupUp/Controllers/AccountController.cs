@@ -443,17 +443,25 @@ namespace GroupUp.Controllers
         }
 
         [Authorize]
-        public async Task<ActionResult> IncreaseSecurityLevelTo1()
+        public ActionResult IncreaseSecurityLevelTo1()
         {
-            await UserManager.AddToRoleAsync(User.Identity.GetUserId(), "SecurityLevel1");
-            return RedirectToAction("UserGroups", "Groups");
+            UserManager.AddToRole(User.Identity.GetUserId(), "SecurityLevel1");
+            LogOff();
+            return RedirectToAction("SuccessfulSecurityLevelIncrease");
         }
 
         [Authorize]
-        public async Task<ActionResult> IncreaseSecurityLevelTo2()
+        public ActionResult IncreaseSecurityLevelTo2()
         {
-            await UserManager.AddToRoleAsync(User.Identity.GetUserId(), "SecurityLevel2");
-            return RedirectToAction("UserGroups", "Groups");
+            UserManager.AddToRole(User.Identity.GetUserId(), "SecurityLevel2");
+            LogOff();
+            return RedirectToAction("SuccessfulSecurityLevelIncrease");
+        }
+
+        [AllowAnonymous]
+        public ActionResult SuccessfulSecurityLevelIncrease()
+        {
+            return View();
         }
         #region Yardımcılar
         // Dışarıdan oturum açma sağlayıcıları eklerken XSRF koruması için kullanılır

@@ -5,17 +5,24 @@
 }
 
 <h2>Rate</h2>
-<p>Please rate the following users between 0-10 according to how well of a group member they were.</p>
-@using (Html.BeginForm("PostRating", "Groups", FormMethod.Post))
+@if (Model.UserRatings.Count == 0)
 {
-    @Html.ValidationSummary()
-    foreach (var member in Model.UserRatings)
+    <p>You were the only one in this group, so you can not rate.</p>
+}
+else
+{
+    <p> Please rate the following users between 0 - 10 according to how well of a group member they were.</p>
+    using (Html.BeginForm("PostRating", "Groups", FormMethod.Post))
     {
-        <div class="form-group">
-            @Html.Label(member.Key)
-            @Html.TextBoxFor(m => m.UserRatings[member.Key])
-        </div>
+        @Html.ValidationSummary()
+        foreach (var member in Model.UserRatings)
+        {
+            <div class="form-group">
+                @Html.Label(member.Key)
+                @Html.TextBoxFor(m => m.UserRatings[member.Key])
+            </div>
+        }
+        @Html.HiddenFor(m => m.GroupId)
+        <button class="btn btn-primary">Submit Rating</button>
     }
-    @Html.HiddenFor(m => m.GroupId)
-    <button class="btn btn-primary">Submit Rating</button>
 }

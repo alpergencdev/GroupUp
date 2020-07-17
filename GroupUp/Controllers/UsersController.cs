@@ -16,7 +16,7 @@ namespace GroupUp.Controllers
             _context = new ApplicationDbContext();
         }
         
-        [Authorize(Roles="SecurityLevel2")]
+        [Authorize(Roles="SecurityLevel1")]
         public ActionResult Details(int userId)
         {
             var aspNetId = User.Identity.GetUserId();
@@ -108,7 +108,6 @@ namespace GroupUp.Controllers
             return View(viewModel);
         }
 
-        [Authorize]
         public ActionResult IncreaseSecurityLevelTo1()
         {
             var aspNetId = User.Identity.GetUserId();
@@ -133,7 +132,6 @@ namespace GroupUp.Controllers
             return RedirectToAction("IncreaseSecurityLevelTo1", "Account");
         }
 
-        [Authorize]
         public ActionResult IncreaseSecurityLevelTo2()
         {
             var aspNetId = User.Identity.GetUserId();
