@@ -1,0 +1,58 @@
+﻿@using Microsoft.Ajax.Utilities
+@model GroupUp.ViewModels.ModeratorUserDetailsViewModel
+@{
+    ViewBag.Title = "UserDetails";
+    Layout = "~/Views/Shared/_ModeratorLayout.cshtml";
+}
+
+<h2>User Details</h2>
+
+<p>User ID: @Model.User.UserId</p>
+<p>Username: @Model.User.AspNetIdentity.UserName</p>
+<p>Security Level: @Model.User.SecurityLevel</p>
+<p>Trust Points: @Model.User.TrustPoints</p>
+<p>Contact Info: @Model.User.ContactInfo</p>
+<p>
+    Is Blocked: @(Model.User.AspNetIdentity.LockoutEndDateUtc == null || Model.User.AspNetIdentity.LockoutEndDateUtc < DateTime.Now ? "No" : "Yes")
+    @if (!(Model.User.AspNetIdentity.LockoutEndDateUtc == null || Model.User.AspNetIdentity.LockoutEndDateUtc < DateTime.Now))
+    {
+        <span>(Block End Date: @Model.User.AspNetIdentity.LockoutEndDateUtc)</span>
+    }
+    </p>
+<p>Joined Groups:</p>
+<ul>
+    @foreach (var group in Model.User.Groups)
+    {
+        if (!group.IsClosed && group.Creator.UserId != Model.User.UserId)
+        {
+            <li> @group.Title</li>
+        }
+    }
+</ul>
+
+<p>Created Groups:</p>
+<ul>
+    @foreach (var group in Model.User.Groups)
+    {
+        if (!group.IsClosed && group.Creator.UserId == Model.User.UserId)
+        {
+            <li> @group.Title</li>
+        }
+    }
+</ul>
+
+<p>Closed Groups:</p>
+<ul>
+    @foreach (var group in Model.User.Groups)
+    {
+        if (group.IsClosed)
+        {
+            <li> @group.Title</li>
+        }
+    }
+</ul>
+
+<p>Change the lockout date to a future date to block the user, or to a previous date to unblock them.</p>
+@Html.ActionLink("Change Lockout Date", "ChangeLockoutDate",
+     new{userId = Model.User.UserId}, new{@class="btn btn-primary"})
+

@@ -1,0 +1,21 @@
+﻿@model GroupUp.ViewModels.ModeratorLockoutViewModel
+@{
+    ViewBag.Title = "ChangeLockoutDate";
+    Layout = "~/Views/Shared/_ModeratorLayout.cshtml";
+}
+
+<h2>Change Lockout Date</h2>
+
+@using (Html.BeginForm("PostLockoutDate", "Moderators", FormMethod.Post))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.LockoutDate)
+        @Html.TextBoxFor(m => m.LockoutDate, new {@class="form-control"})
+        @Html.ValidationMessageFor(m => m.LockoutDate)
+    </div>
+
+    @Html.HiddenFor(m => m.UserId)
+
+    <button class="btn btn-primary" type="submit">Change Lockout Date</button>
+}
+

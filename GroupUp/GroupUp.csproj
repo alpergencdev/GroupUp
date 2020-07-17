@@ -400,6 +400,9 @@
     <Compile Include="ViewModels\GroupRequestsViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
     <Compile Include="ViewModels\ISLViewModel.cs" />
+    <Compile Include="ViewModels\ModeratorLockoutViewModel.cs" />
+    <Compile Include="ViewModels\ModeratorUserDetailsViewModel.cs" />
+    <Compile Include="ViewModels\ModeratorUsersViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserEditViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
@@ -483,10 +486,13 @@
     <Content Include="Views\Users\Edit.cshtml" />
     <Content Include="Views\Shared\_ModeratorNavbar.cshtml" />
     <Content Include="Views\Shared\_ModeratorLayout.cshtml" />
+    <Content Include="Views\Moderators\Index.cshtml" />
+    <Content Include="Views\Moderators\Users.cshtml" />
+    <Content Include="Views\Moderators\UserDetails.cshtml" />
+    <Content Include="Views\Moderators\ChangeLockoutDate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Moderators\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

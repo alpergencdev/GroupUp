@@ -1,0 +1,36 @@
+﻿@model GroupUp.ViewModels.ModeratorUsersViewModel
+@{
+    ViewBag.Title = "Users";
+    Layout = "~/Views/Shared/_ModeratorLayout.cshtml";
+}
+
+<h2>Users</h2>
+
+<table class="table table-bordered">
+    <tr>
+        <th>User ID</th>
+        <th>Username</th>
+        <th>On Lockout</th>
+        <th>Details</th>
+    </tr>
+
+    @for ( int i = 0; i < Model.Users.Count; i++)
+    {
+        var user = Model.Users[i];
+        <tr>
+            <td>
+                @user.UserId
+            </td>
+            <td>
+                @user.AspNetIdentity.UserName
+            </td>
+            <td>
+                @(user.AspNetIdentity.LockoutEndDateUtc == null || user.AspNetIdentity.LockoutEndDateUtc < DateTime.Now ? "No" : "Yes")
+            </td>
+            <td>
+                @Html.ActionLink("View Details", "UserDetails", new {userId = user.UserId})
+            </td>
+        </tr>
+    }
+    </table>
+
