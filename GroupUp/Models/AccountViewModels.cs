@@ -49,15 +49,15 @@ namespace GroupUp.Models
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Kullanıcı adı")]
+        [Display(Name = "Username")]
         public string Username { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Parola")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
-        [Display(Name = "Beni anımsa?")]
+        [Display(Name = "Remember me")]
         public bool RememberMe { get; set; }
     }
 
@@ -65,22 +65,22 @@ namespace GroupUp.Models
     {
         [Required]
         [EmailAddress]
-        [Display(Name = "E-posta")]
+        [Display(Name = "E-mail Address")]
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "{0} en az {2} karakter uzunluğunda olmalıdır.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Parola")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Parolayı onaylayın")]
-        [Compare("Password", ErrorMessage = "Parola ve onay parolası aynı değil.")]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "Password and confirmation passwords are not the same.")]
         public string ConfirmPassword { get; set; }
 
         [Required]
-        [Display(Name = "Kullanıcı Adı")]
+        [Display(Name = "Username")]
         public string Username { get; set; }
     }
 

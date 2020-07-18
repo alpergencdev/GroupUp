@@ -56,7 +56,7 @@ namespace GroupUp.Models
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "New password")]
+        [Display(Name = "Confirm password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirm passwords do not match.")]
         public string ConfirmPassword { get; set; }
     }

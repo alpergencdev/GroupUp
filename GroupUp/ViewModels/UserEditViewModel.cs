@@ -26,9 +26,9 @@ namespace GroupUp.ViewModels
         {
             ApplicationDbContext context = new ApplicationDbContext();
 
-            var email = (string) validationContext.ObjectInstance;
+            var thisViewModel = (UserEditViewModel) validationContext.ObjectInstance;
 
-            if (context.Users.Any(u => u.AspNetIdentity.Email == email))
+            if (context.Users.Any(u => u.AspNetIdentity.Email == thisViewModel.Email))
             {
                 return new ValidationResult("The e-mail address you have requested is already in use.");
             }

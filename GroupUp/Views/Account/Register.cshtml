@@ -1,6 +1,6 @@
 ﻿@model GroupUp.Models.RegisterViewModel
 @{
-    ViewBag.Title = "Kaydol";
+    ViewBag.Title = "Register";
 }
 @* ReSharper disable once MissingTitleTag *@
 <head>
@@ -11,7 +11,7 @@
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", @id = "theForm" }))
 {
     @Html.AntiForgeryToken()
-    <h4>Yeni bir hesap oluşturun.</h4>
+    <h4>Create a new account.</h4>
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">
@@ -44,7 +44,7 @@
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" id="submitBtn" value="Kaydol" />
+            <input type="submit" class="btn btn-default" id="submitBtn" value="Register" />
         </div>
     </div>
 
