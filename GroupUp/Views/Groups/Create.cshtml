@@ -27,6 +27,17 @@
         @Html.ValidationMessageFor(m => m.MaxUserCapacity)
     </div>
     
+    <p>
+        Below, you can edit the city, country and continent of your request.
+    </p>
+
+    <p>
+        You can enter "-" instead of a city name if you want all cities in that country to apply.
+    </p>
+
+    <p>
+        Same rule applies for all area entries, but for an area to be "-", the area entries above it should be "-" as well.
+    </p>
     <div class="form-group">
         @Html.LabelFor(m => m.City)
         @Html.TextBoxFor(m => m.City, new { @class = "form-control" })
