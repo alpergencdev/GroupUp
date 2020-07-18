@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -8,6 +9,7 @@ using GroupUp.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 // ReSharper disable SimplifyLinqExpression
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace GroupUp.Controllers
 {
@@ -265,7 +267,8 @@ namespace GroupUp.Controllers
         }
 
         [Authorize]
-        public ActionResult ReadLocation(double lat, double lng, string returnToAction)
+        [HttpPost]
+        public ActionResult ReadLocation(double lat, double lng)
         {
             var locationProperties = new LocationProperties()
             {
@@ -276,10 +279,14 @@ namespace GroupUp.Controllers
                 CountryShortName = "-",
                 Continent = "-"
             };
-
+            // My JS code submits (-1,-1) with this error, so we check for errors below:
+            if( lat == -1 && lng == -1)
+            {
+                return RedirectToAction("ErroneousGeolocation", "Account");
+            }
             LocationMethods.ReverseGeocode(lat, lng, ref locationProperties);
             Session["Location"] = locationProperties;
-            return Content(lat + " " + lng);
+            return Content(lat + " " + lng); // does not matter since ReadAction is called by POST inside a JS code.
         }
 
         [Authorize]
