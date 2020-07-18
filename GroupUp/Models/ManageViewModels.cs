@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 
+// This file was created by Visual Studio 2019 for ASP.NET Identity.
 namespace GroupUp.Models
 {
     public class IndexViewModel

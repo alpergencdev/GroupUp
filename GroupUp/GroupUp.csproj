@@ -386,7 +386,6 @@
     <Compile Include="Models\LocationModels\LocationMethods.cs" />
     <Compile Include="Models\LocationProperties.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\Recaptcha.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="GroupUpHub.cs" />
     <Compile Include="Models\UserReport.cs" />

@@ -46,6 +46,7 @@ namespace GroupUp.Controllers
                 return HttpNotFound();
             }
 
+            // get the user with the given ID with all the necessary navigation properties.
             var targetUser = _context.Users
                 .Include(u => u.AspNetIdentity)
                 .Include(u => u.Groups)
@@ -104,6 +105,11 @@ namespace GroupUp.Controllers
 
             else
             {
+                /* Lockout dates work as follows: A lockout date value that is NULL,
+                 * or is before the current time means that the user can access the system.
+                 * A lockout date that is in the future means the user cannot access the system
+                 * until that date is reached. The moderator can use this to block/unblock a user.
+                */
                 var targetUser = _context.Users.Include(u => u.AspNetIdentity)
                     .SingleOrDefault(u => u.UserId == viewModel.UserId);
                 if (targetUser == null)
@@ -145,6 +151,7 @@ namespace GroupUp.Controllers
                 return HttpNotFound();
             }
 
+            // get the group with the given ID with all the necessary navigation properties.
             var targetGroup = _context.Groups
                 .Include(g => g.Members)
                 .Include(g => g.Members.Select(u => u.AspNetIdentity))

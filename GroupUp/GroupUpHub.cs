@@ -8,9 +8,10 @@ using Microsoft.AspNet.SignalR;
 
 namespace GroupUp
 {
+    // This class is a SignalR hub to coordinate group chats, and their chatlogs.
     public class GroupUpHub : Hub
     {
-        public readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         public GroupUpHub()
         {
             _context = new ApplicationDbContext();
@@ -31,8 +32,10 @@ namespace GroupUp
             try
             {
                 int roomNo = Int32.Parse(roomName);
+                // first, add the message to the ChatLog of the group.
                 _context.Groups.Single(g => g.GroupId == roomNo).ChatLog += $"<strong>{name}: </strong>{message}\n";
                 _context.SaveChanges();
+                // then, send it to the clients of the group.
                 Clients.Group(roomName).addNewMessageToPage(name, message);
             }
             catch (Exception e)

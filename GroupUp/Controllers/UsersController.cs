@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using GroupUp.Models;
@@ -25,6 +24,10 @@ namespace GroupUp.Controllers
             var targetUser = _context.Users.Include(u => u.Groups).Include(u => u.AspNetIdentity).SingleOrDefault(u => u.UserId == userId);
             UserDetailsViewModel viewModel;
 
+            // in this details page, errors are handled with deny messages.
+            // if the user with the given ID can not be viewed by the user
+            // for any reason, then a corresponding deny message is set and
+            // given to the view to show.
             if (targetUser == null)
             {
                 viewModel = new UserDetailsViewModel()
@@ -81,7 +84,17 @@ namespace GroupUp.Controllers
             {
                 var aspNetId = User.Identity.GetUserId();
                 var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
-                if (currentUser != null && (!currentUser.IsVerified && currentUser.VerificationCode == viewModel.VerificationCode))
+                // if currentUser is null, or the given verification code does not match, return the user to the verification screen.
+                if (currentUser == null)
+                {
+                    return View("VerifyUser", viewModel);
+                }
+
+                if (currentUser.IsVerified || currentUser.VerificationCode != viewModel.VerificationCode)
+                {
+                    return View("VerifyUser", viewModel);
+                }
+                if (!currentUser.IsVerified && currentUser.VerificationCode == viewModel.VerificationCode)
                 {
                     // verify the user
                     currentUser.IsVerified = true;
@@ -89,7 +102,6 @@ namespace GroupUp.Controllers
                     _context.SaveChanges();
                     return RedirectToAction("UserGroups", "Groups");
                 }
-
                 return RedirectToAction("UserGroups", "Groups");
 
             }
@@ -113,6 +125,7 @@ namespace GroupUp.Controllers
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+
             if (currentUser == null)
             {
                 return HttpNotFound();
@@ -194,6 +207,9 @@ namespace GroupUp.Controllers
         [HttpPost]
         public ActionResult PostEdit(UserEditViewModel viewModel)
         {
+            // A user can only change their email address and their contact info through this action.
+            // Passwords can be changed through the action provided by ASP.NET Identity, and the other
+            // properties can not be changed at all.
             if (!ModelState.IsValid)
             {
                 return View("Edit", viewModel);
@@ -209,6 +225,8 @@ namespace GroupUp.Controllers
             }
 
             currentUser.ContactInfo = viewModel.ContactInfo;
+            // If the email has changed and the user was not verified, send the verification email
+            // to the new email address.
             if (currentUser.AspNetIdentity.Email != viewModel.Email && !currentUser.IsVerified)
             {
                 if (currentUser.VerificationCode != null)
