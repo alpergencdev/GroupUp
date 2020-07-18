@@ -446,6 +446,7 @@ namespace GroupUp.Controllers
         public ActionResult IncreaseSecurityLevelTo1()
         {
             UserManager.AddToRole(User.Identity.GetUserId(), "SecurityLevel1");
+            // Log the user off to make sure role changes take effect.
             LogOff();
             return RedirectToAction("SuccessfulSecurityLevelIncrease");
         }
@@ -454,6 +455,7 @@ namespace GroupUp.Controllers
         public ActionResult IncreaseSecurityLevelTo2()
         {
             UserManager.AddToRole(User.Identity.GetUserId(), "SecurityLevel2");
+            // Log the user off to make sure role changes take effect.
             LogOff();
             return RedirectToAction("SuccessfulSecurityLevelIncrease");
         }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -28,7 +27,9 @@ namespace GroupUp.Controllers
             
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            // get target group
             var targetGroup = _context.Groups.Include(g => g.Creator).Include(g => g.Members).Include(g => g.Members.Select( u => u.AspNetIdentity) ).SingleOrDefault(g => g.GroupId == id);
+            // get which screen to show. If the group is closed, show closeddetails.
             if (targetGroup != null && targetGroup.IsClosed)
             {
                 return RedirectToAction("ClosedDetails", new {groupId = targetGroup.GroupId});
@@ -38,28 +39,32 @@ namespace GroupUp.Controllers
                 Group = targetGroup,
                 User = currentUser
             };
+            // if current user is the creator of the desired group, show creator details.
             if (targetGroup != null && targetGroup.Creator == currentUser)
             {
                 return View("CreatorDetails", gvm);
             }
+            // if current user is a member of the desired group, show member details.
             if (targetGroup != null && targetGroup.Members.Contains(currentUser))
             {
                 return View("MemberDetails", gvm);
             }
 
-            
+            // else, show normal details.
             return View(gvm);
         }
 
         [Authorize]
         public ActionResult Create()
         {
+            // if user's location is unknown, get it using the getlocation action.
             if (Session["Location"] == null)
             {
                 Session["GetLocationFlag"] = true;
                 return RedirectToAction("GetLocation", new { returnAction = "Create" });
             }
 
+            // get the locationproperties object of this session, and create viewmodel using it.
             var locationProperties = (LocationProperties) Session["Location"];
             var viewModel = new CreateGroupViewModel()
             {
@@ -79,6 +84,7 @@ namespace GroupUp.Controllers
         {
             string aspUserId = User.Identity.GetUserId();
             var user = _context.Users.Include(u => u.AspNetIdentity).SingleOrDefault(u => u.AspNetIdentity.Id == aspUserId);
+            // return back to the screen that posted this request, depending on whether this was an edit or create request.
             if (!ModelState.IsValid)
             {
                 if (viewModel.GroupId < 0)
@@ -91,6 +97,7 @@ namespace GroupUp.Controllers
                 }
             }
 
+            // if groupID < 0, meaning this was a new group, create a new group and put it into the database.
             if (viewModel.GroupId < 0)
             {
                 Group newGroup = new Group()
@@ -109,6 +116,7 @@ namespace GroupUp.Controllers
                 };
                 _context.Groups.Add(newGroup);
             }
+            // else, edit the group entry in the database accordingly.
             else
             {
                 var groupInDb = _context.Groups.SingleOrDefault(g => g.GroupId == viewModel.GroupId);
@@ -127,6 +135,7 @@ namespace GroupUp.Controllers
         [Authorize]
         public ActionResult Requests()
         {
+            // if user's location is unknown, get it using the getlocation action.
             if (Session["Location"] == null)
             {
                 Session["GetLocationFlag"] = true;
@@ -139,7 +148,7 @@ namespace GroupUp.Controllers
                 .Where(g => g.Members.Count < g.MaxUserCapacity && !g.IsClosed).ToList();
             var viewModel = new GroupRequestsViewModel()
             {
-                Groups = groupsToShow, // location and membership checks are done inside razorpages.
+                Groups = groupsToShow, // location and membership checks are done inside the view page.
                 User = currentUser,
                 Location = (LocationProperties) Session["Location"]
             };
@@ -149,6 +158,7 @@ namespace GroupUp.Controllers
         [Authorize(Roles="SecurityLevel1")]
         public ActionResult Join(int groupId)
         {
+            // User must be at least security level 1 to join.
             if (!User.IsInRole("SecurityLevel1"))
             {
                 return HttpNotFound();
@@ -159,11 +169,11 @@ namespace GroupUp.Controllers
 
             var targetGroup = _context.Groups.Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
 
+            // check the conditions that would not allow a user to join.
             if (targetGroup == null)
             {
                 return Content("There is no group with the given ID.");
             }
-
             if (targetGroup.IsClosed)
             {
                 return Content("This group is closed.");
@@ -183,39 +193,12 @@ namespace GroupUp.Controllers
                 return Content("Group is full.");
             }
 
-            // If no erroneous conditions were satisfied...
+            // If no erroneous conditions were satisfied, add user to group and save changes.
 
             targetGroup.Members.Add(currentUser);
             currentUser.Groups.Add(targetGroup);
             _context.SaveChanges();
             return RedirectToAction("Details", "Groups", new { id = groupId});
-        }
-
-        [Authorize]
-        public bool CanUserJoin(int groupId)
-        {
-            var aspNetId = User.Identity.GetUserId();
-            var currentUser = _context.Users.Include(u => u.Groups)
-                .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
-
-            var targetGroup = _context.Groups.Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
-
-            if (targetGroup == null)
-            {
-                return false;
-            }
-
-            if (currentUser == null)
-            {
-                return false;
-            }
-
-            if (targetGroup.Members.Contains(currentUser))
-            {
-                return false;
-            }
-
-            return true;
         }
 
         [Authorize]
@@ -225,6 +208,7 @@ namespace GroupUp.Controllers
             var currentUser = _context.Users.Include(u => u.Groups)
                 .SingleOrDefault( u => u.AspNetIdentity.Id == aspNetId);
 
+            // get the created, joined and closed groups of the user seperately.
             var createdGroups = _context.Groups.Include(g => g.Members)
                 .Where(g => g.Creator.UserId == currentUser.UserId && !g.IsClosed).ToList();
 
@@ -233,6 +217,7 @@ namespace GroupUp.Controllers
 
             var closedGroups = _context.Groups.Include(g => g.Members).Where(g => g.IsClosed).ToList();
 
+            // seperate the closed groups to only get the ones the user has joined and not rated.
             var closedUserGroups = new List<Group>();
             foreach (var group in closedGroups)
             {
@@ -247,6 +232,8 @@ namespace GroupUp.Controllers
                     }
                 }
             }
+
+            // put the lists into a viewmodel and return the view.
             var viewModel = new UserGroupsViewModel()
             {
                 User = currentUser,
@@ -262,6 +249,8 @@ namespace GroupUp.Controllers
         [Authorize]
         public ActionResult GetLocation(string returnAction)
         {
+            // A GetLocation flag is used so that the users can not call this method.
+            // A calling action will set this GetLocationFlag to true.
             if (Session["GetLocationFlag"] != null && (bool)Session["GetLocationFlag"])
             {
                 var viewModel = new GetLocationViewModel()
@@ -291,19 +280,6 @@ namespace GroupUp.Controllers
             LocationMethods.ReverseGeocode(lat, lng, ref locationProperties);
             Session["Location"] = locationProperties;
             return Content(lat + " " + lng);
-            }
-
-        [Authorize]
-        public ActionResult PrintLocation()
-        {
-            var location = (LocationProperties) Session["Location"];
-
-            if (location == null)
-            {
-                return HttpNotFound();
-            }
-
-            return Content($"Lat: {location.Lat} Lng: {location.Lng} City: {location.City} Country = {location.CountryLongName} Continent = {location.Continent}");
         }
 
         [Authorize]
@@ -323,6 +299,8 @@ namespace GroupUp.Controllers
 
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+
+            // a user can only close the group is they are the creator of that group.
             if (targetGroup.Creator != currentUser)
             {
                 return HttpNotFound();
@@ -389,6 +367,7 @@ namespace GroupUp.Controllers
                 return HttpNotFound();
             }
 
+            // if the user does not have a group with the given ID, return HttpNotFound.
             if (!currentUser.Groups.Any(g => g.GroupId == groupId))
             {
                 return HttpNotFound();
@@ -532,6 +511,7 @@ namespace GroupUp.Controllers
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 
+            // user can only kick someone out of the group if they created that group.
             if (targetGroup != null && (currentUser != null && targetGroup.Creator.UserId == currentUser.UserId))
             {
                 var targetUser = _context.Users.SingleOrDefault(u => u.UserId == userId);
