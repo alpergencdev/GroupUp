@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
-using GroupUp.Models;
-
 namespace GroupUp.ViewModels
 {
     public class GroupReportViewModel

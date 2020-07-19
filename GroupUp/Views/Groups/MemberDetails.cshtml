@@ -1,5 +1,4 @@
-﻿@using GroupUp.Controllers
-@model GroupUp.ViewModels.GroupDetailsViewModel
+﻿@model GroupUp.ViewModels.GroupDetailsViewModel
 @{
     ViewBag.Title = "Details";
 }
@@ -43,7 +42,9 @@ else
     <input type="button" id="sendmessage" value="Send" />
     @section scripts {
         <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+        @* ReSharper disable Html.PathError *@
         <script src="~/signalr/hubs"></script>
+        @* ReSharper restore Html.PathError *@
         <script>
             $(function() {
                 // Reference the auto-generated proxy for the hub.

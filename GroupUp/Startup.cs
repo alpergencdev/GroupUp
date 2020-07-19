@@ -1,5 +1,4 @@
-﻿using System.Web.ModelBinding;
-using Microsoft.Owin;
+﻿using Microsoft.Owin;
 using Owin;
 
 [assembly: OwinStartupAttribute(typeof(GroupUp.Startup))]

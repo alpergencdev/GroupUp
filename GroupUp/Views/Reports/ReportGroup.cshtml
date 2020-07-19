@@ -1,5 +1,4 @@
-﻿@using GroupUp.Models
-@model GroupUp.ViewModels.GroupReportViewModel
+﻿@model GroupUp.ViewModels.GroupReportViewModel
 @{
     ViewBag.Title = "ReportGroup";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -10,7 +9,7 @@
 @{
     using (Html.BeginForm("PostGroupReport", "Reports", FormMethod.Post))
     {
-        <p>Report for @Html.ActionLink(Model.TargetGroupTitle, "Details", "Groups", new {groupId = Model.ReportedGroupId}, null)</p>
+        <p>Report for @Html.ActionLink(Model.TargetGroupTitle, "Details", "Groups", new {id = Model.ReportedGroupId}, null)</p>
         <div class="form-group">
             @Html.LabelFor(m => m.Reason)
             @Html.TextBoxFor(m => m.Reason, new { @class = "form-control"})

@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using GroupUp.Models;
 using GroupUp.ViewModels;
-using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 
 namespace GroupUp.Controllers
 {
     public class ReportsController : Controller
     {
-        public readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public ReportsController()
         {
@@ -27,6 +23,10 @@ namespace GroupUp.Controllers
                 return HttpNotFound();
             }
             var targetUser = _context.Users.Include(u => u.AspNetIdentity).SingleOrDefault(u => u.UserId == userId);
+            if (targetUser == null)
+            {
+                return HttpNotFound();
+            }
             if (targetUser.AspNetIdentity.Id == User.Identity.GetUserId())
             {
                 return HttpNotFound();
@@ -35,8 +35,8 @@ namespace GroupUp.Controllers
             {
                 Reason = "",
                 Description = "",
-                ReportedUserId = targetUser?.UserId ?? -1,
-                TargetUsername = targetUser?.AspNetIdentity.UserName ?? "-"
+                ReportedUserId = targetUser.UserId,
+                TargetUsername = targetUser.AspNetIdentity.UserName
             };
             return View(viewModel);
         }
@@ -50,14 +50,19 @@ namespace GroupUp.Controllers
             }
 
             var targetGroup = _context.Groups.SingleOrDefault(g => g.GroupId == groupId);
-            var viewModel = new GroupReportViewModel()
+            if (targetGroup != null)
             {
-                Reason = "",
-                Description = "",
-                ReportedGroupId = targetGroup?.GroupId ?? -1,
-                TargetGroupTitle = targetGroup.Title
-            };
-            return View(viewModel);
+                var viewModel = new GroupReportViewModel()
+                {
+                    Reason = "",
+                    Description = "",
+                    ReportedGroupId = targetGroup.GroupId,
+                    TargetGroupTitle = targetGroup.Title
+                };
+                return View(viewModel);
+            }
+
+            return HttpNotFound();
         }
 
         [Authorize(Roles="SecurityLevel1")]

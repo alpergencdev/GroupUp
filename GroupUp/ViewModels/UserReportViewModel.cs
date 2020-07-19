@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using GroupUp.Models;
 
 namespace GroupUp.ViewModels
 {

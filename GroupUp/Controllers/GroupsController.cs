@@ -6,7 +6,6 @@ using GroupUp.Models;
 using GroupUp.Models.LocationModels;
 using GroupUp.ViewModels;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 // ReSharper disable SimplifyLinqExpression
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
