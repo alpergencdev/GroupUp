@@ -10,21 +10,25 @@
     <tr>
         <th>Group ID</th>
         <th>Group Title</th>
+        <th>Status</th>
         <th>Details</th>
     </tr>
 
     @foreach (var group in Model.Groups)
     {
-        <tr>
-            <td>
-                @group.GroupId
-            </td>
-            <td>
-                @group.Title
-            </td>
-            <td>
-                @Html.ActionLink("View Details", "GroupDetails", new{groupId = group.GroupId})
-            </td>
-        </tr>
+<tr>
+    <td>
+        @group.GroupId
+    </td>
+    <td>
+        @group.Title
+    </td>
+    <td>
+        @(group.IsClosed ? "Closed" : "Open")
+    </td>
+    <td>
+        @Html.ActionLink("View Details", "GroupDetails", new { groupId = group.GroupId })
+    </td>
+</tr>
     }
 </table>

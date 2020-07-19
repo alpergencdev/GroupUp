@@ -6,7 +6,7 @@ using System.Web;
 
 namespace GroupUp.ViewModels
 {
-    [LocationVerification]
+    
     public class CreateGroupViewModel
     {
         [Required]
@@ -24,7 +24,7 @@ namespace GroupUp.ViewModels
         public int MaxUserCapacity { get; set; }
 
         [Required]
-        
+        [LocationVerification]
         public string City { get; set; }
 
         [Required]

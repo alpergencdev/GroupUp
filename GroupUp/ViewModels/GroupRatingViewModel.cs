@@ -23,8 +23,8 @@ namespace GroupUp.ViewModels
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
 
-            var dict = (Dictionary<string, int>) validationContext.ObjectInstance;
-            foreach (var kvp in dict)
+            var thisViewModel = (GroupRatingViewModel) validationContext.ObjectInstance;
+            foreach (var kvp in thisViewModel.UserRatings)
             {
                 if (kvp.Value < 0 || kvp.Value > 10)
                 {

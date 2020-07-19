@@ -19,7 +19,7 @@ else
         {
             <div class="form-group">
                 @Html.Label(member.Key)
-                @Html.TextBoxFor(m => m.UserRatings[member.Key])
+                @Html.TextBoxFor(m => m.UserRatings[member.Key], new {@class="form-control"})
             </div>
         }
         @Html.HiddenFor(m => m.GroupId)
