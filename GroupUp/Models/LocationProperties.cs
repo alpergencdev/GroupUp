@@ -20,15 +20,17 @@ namespace GroupUp.Models
             // Condition 1: Both city values and country values match.
             bool condition1 = city == this.City && country == this.CountryLongName;
 
-            // Condition 2: City value does not matter, country values match.
+            // Condition 2: City value does not matter, country values match, meaning the group is country-wide.
             bool condition2 = city == "-" && country == this.CountryLongName;
 
-            // Condition 3: City and country values do not matter, continent values match.
+            // Condition 3: City and country values do not matter, continent values match, meaning the group is continent-wide.
             bool condition3 = city == "-" && country == "-" && continent == this.Continent;
 
-            // Condition 4: All values do not matter.
+            // Condition 4: All values do not matter, meaning the group is worldwide.
             bool condition4 = city == "-" && country == "-" && continent == "-";
 
+            // if any of these conditions hold, then the given location
+            // matches the location held inside this object.
             return condition1 || condition2 || condition3 || condition4;
         }
     }
