@@ -30,11 +30,7 @@ namespace GroupUp.Models.LocationModels
             var responseString = client.GetStringAsync(requestUri);
 
             // Convert the JSON response of Google API into the Root object defined inside JSONClasses.cs
-            Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(responseString.Result,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = new DefaultContractResolver()
-                });
+            Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(responseString.Result);
             var components = myDeserializedClass.results.First().address_components;
             // Get necessary values from root object.
             foreach (var component in components)
