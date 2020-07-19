@@ -297,7 +297,7 @@ namespace GroupUp.Controllers
             {
                 return HttpNotFound();
             }
-            var targetGroup = _context.Groups.Include(g => g.Creator).SingleOrDefault(g => g.GroupId == groupId);
+            var targetGroup = _context.Groups.Include(g => g.Creator).Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
 
             if (targetGroup == null)
             {
@@ -313,6 +313,16 @@ namespace GroupUp.Controllers
                 return HttpNotFound();
             }
 
+            // if the code has arrived to this if block, it means that the current user is the creator.
+            // here, we check if the creator is the only member inside the group. if so, we delete the group
+            // instead of closing it.
+            if (targetGroup.Members.Contains(currentUser) && targetGroup.Members.Count == 1)
+            {
+                targetGroup.Members.Remove(currentUser);
+                _context.Groups.Remove(targetGroup);
+                _context.SaveChanges();
+                return RedirectToAction("UserGroups", "Groups");
+            }
             targetGroup.IsClosed = true;
             ClosedGroup newEntry = new ClosedGroup()
             {

@@ -197,6 +197,7 @@ namespace GroupUp.Controllers
 
             var viewModel = new UserEditViewModel()
             {
+                PreviousEmail = currentUser.AspNetIdentity.Email,
                 ContactInfo = currentUser.ContactInfo,
                 Email = currentUser.AspNetIdentity.Email
             };

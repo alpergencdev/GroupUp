@@ -20,5 +20,6 @@
         @Html.ValidationMessageFor(m => m.ContactInfo)
     </div>
 
+    @Html.HiddenFor(m => m.PreviousEmail)
     <button class="btn btn-primary" type="submit">Finish Edit</button>
 }

@@ -10,6 +10,8 @@ namespace GroupUp.ViewModels
     public class UserEditViewModel
     {
         [Required]
+        public string PreviousEmail { get; set; }
+        [Required]
         [EmailAddress]
         [Display(Name="E-mail Address")]
         [IsUniqueEmail]
@@ -28,7 +30,7 @@ namespace GroupUp.ViewModels
 
             var thisViewModel = (UserEditViewModel) validationContext.ObjectInstance;
 
-            if (context.Users.Any(u => u.AspNetIdentity.Email == thisViewModel.Email))
+            if (thisViewModel.Email != thisViewModel.PreviousEmail && context.Users.Any(u => u.AspNetIdentity.Email == thisViewModel.Email))
             {
                 return new ValidationResult("The e-mail address you have requested is already in use.");
             }
