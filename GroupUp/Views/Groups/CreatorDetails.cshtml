@@ -12,11 +12,12 @@
 }
 else
 {
-    <p>Group Title: @Model.Group.Title</p>
-    <p>Group Description: @Model.Group.Description</p>
-    <p>Group Members:</p>
+    <p><strong>Group Title:</strong>  @Model.Group.Title</p>
+    <p><strong>Group Description:</strong>  @Model.Group.Description</p>
+    <p><strong>Group Location:</strong> @Model.Group.City, @Model.Group.Country, @Model.Group.Continent</p>
     @Html.ActionLink("Report Group", "ReportGroup", "Reports", new {groupId = Model.Group.GroupId}, new{@class="btn btn-primary"})
-<ul>
+    <p><strong>Group Members:</strong></p>
+    <ul>
     @foreach (var usr in @Model.Group.Members)
     {
         if (usr.UserId != Model.User.UserId)

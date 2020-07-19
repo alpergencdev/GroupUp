@@ -1,5 +1,4 @@
-﻿@using GroupUp.Controllers
-@model GroupUp.ViewModels.ClosedGroupViewModel
+﻿@model GroupUp.ViewModels.ClosedGroupViewModel
 @{
     ViewBag.Title = "Details";
 }
@@ -12,30 +11,32 @@
 }
 else
 {
-    <p>Group Title: @Model.ClosedGroup.Group.Title</p>
-    <p>Group Description: @Model.ClosedGroup.Group.Description</p>
-    <p>Group Members:</p>
+    <p><strong>Group Title:</strong>  @Model.ClosedGroup.Group.Title</p>
+    <p><strong>Group Description:</strong>  @Model.ClosedGroup.Group.Description</p>
+    <p><strong>Group Location:</strong> @Model.ClosedGroup.Group.City, @Model.ClosedGroup.Group.Country, @Model.ClosedGroup.Group.Continent</p>
     @Html.ActionLink("Report Group", "ReportGroup", "Reports", new { groupId = Model.ClosedGroup.Group.GroupId }, new { @class = "btn btn-primary" })
-<ul>
-    @foreach (var usr in @Model.ClosedGroup.Group.Members)
-    {
-        if (usr.UserId != Model.User.UserId)
+    <p><strong>Group Members:</strong></p>
+
+    <ul>
+        @foreach (var usr in @Model.ClosedGroup.Group.Members)
         {
-            <li>
-                @usr.AspNetIdentity.UserName | @Html.ActionLink("View User", "Details", "Users", new { userId = @usr.UserId }, null)
-                | @Html.ActionLink("Report User", "ReportUser", "Reports", new { userId = usr.UserId }, null)
-            </li>
+            if (usr.UserId != Model.User.UserId)
+            {
+                <li>
+                    @usr.AspNetIdentity.UserName | @Html.ActionLink("View User", "Details", "Users", new { userId = @usr.UserId }, null)
+                    | @Html.ActionLink("Report User", "ReportUser", "Reports", new { userId = usr.UserId }, null)
+                </li>
+            }
+            else
+            {
+                <li>
+                    @usr.AspNetIdentity.UserName
+                </li>
+            }
         }
-        else
-        {
-            <li>
-                @usr.AspNetIdentity.UserName
-            </li>
-        }
-    }
-</ul>
+    </ul>
 
     <hr />
-    @Html.ActionLink("Rate Group", "Rate", new{groupId = Model.ClosedGroup.Group.GroupId});
+    @Html.ActionLink("Rate Group", "Rate", new { groupId = Model.ClosedGroup.Group.GroupId });
 
 }

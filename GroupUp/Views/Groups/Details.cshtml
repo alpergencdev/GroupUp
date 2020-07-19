@@ -13,8 +13,9 @@ else
 {
     <p><strong>Group Title:</strong> @Model.Group.Title</p>
     <p><strong>Group Description:</strong>  @Model.Group.Description</p>
+    @Html.ActionLink("Report Group", "ReportGroup", "Reports", new { groupId = Model.Group.GroupId }, new { @class = "btn btn-primary" })
+    <p><strong>Group Location:</strong> @Model.Group.City, @Model.Group.Country, @Model.Group.Continent</p>
     <p><strong>Group Members:</strong></p>
-    @Html.ActionLink("Report Group", "ReportGroup", "Reports", new {groupId = Model.Group.GroupId}, new{@class="btn btn-primary"})
     <ul>
         @foreach (var usr in @Model.Group.Members)
         {
@@ -24,17 +25,17 @@ else
         }
     </ul>
 
-    <hr/>
+    <hr />
 
     if (Model.Group.Members.Count < Model.Group.MaxUserCapacity
         && !Model.Group.Members.Contains(Model.User)
         && Model.User.SecurityLevel >= 1)
     {
-        using (@Html.BeginForm("Join", "Groups", new {groupId = Model.Group.GroupId}, FormMethod.Post))
+        using (@Html.BeginForm("Join", "Groups", new { groupId = Model.Group.GroupId }, FormMethod.Post))
         {
             <button class="btn btn-primary">Join Group</button>
         }
-        
+
     }
     else
     {
