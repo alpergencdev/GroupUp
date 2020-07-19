@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -16,11 +15,9 @@ namespace GroupUp.Controllers
     public class GroupsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        protected UserManager<ApplicationUser> UserManager { get; set; }
         public GroupsController()
         {
             _context = new ApplicationDbContext();
-            UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(this._context));
         }
         // GET: Groups
         [Authorize]

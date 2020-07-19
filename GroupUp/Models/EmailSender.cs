@@ -17,7 +17,7 @@ namespace GroupUp.Models
             client.Host = "smtp.gmail.com";
             client.Port = 587;
 
-            // setup Smtp authentication
+            // Set up SMTP authentication
             System.Net.NetworkCredential credentials =
                 new System.Net.NetworkCredential("noreply.groupup@gmail.com", "groupup123A+");
             client.UseDefaultCredentials = false;

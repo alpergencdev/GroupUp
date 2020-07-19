@@ -175,6 +175,7 @@ namespace GroupUp.Controllers
         {
             var aspNetId = User.Identity.GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity).SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            // if current user has not verified their email, resend verification code.
             if (currentUser != null && currentUser.VerificationCode != null && !currentUser.IsVerified)
             {
                 EmailSender.Send(currentUser.AspNetIdentity.Email, (int) currentUser.VerificationCode);

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+// ReSharper disable UnusedMember.Global
+// ReSharper disable InconsistentNaming
 
 namespace GroupUp.Models.LocationModels
 {
     // created using https://json2csharp.com/
+    // namings are not done according to pascal casing to successfully mirror the JSON objects returned by Google API, which use snake casing:
     public class PlusCode
     {
         public string compound_code { get; set; }

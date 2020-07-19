@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace GroupUp.Models.LocationModels
 {
@@ -32,7 +33,11 @@ namespace GroupUp.Models.LocationModels
             var responseString = client.GetStringAsync(requestUri);
 
             // Convert the JSON response of Google API into the Root object defined inside JSONClasses.cs
-            Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(responseString.Result);
+            Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(responseString.Result,
+                new JsonSerializerSettings
+                {
+                    ContractResolver = new DefaultContractResolver()
+                });
             var components = myDeserializedClass.results.First().address_components;
             // Get necessary values from root object.
             foreach (var component in components)

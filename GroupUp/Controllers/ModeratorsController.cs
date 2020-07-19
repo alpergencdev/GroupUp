@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using GroupUp.Models;
 using GroupUp.ViewModels;
 using Microsoft.AspNet.Identity;
-using Newtonsoft.Json;
+
 
 namespace GroupUp.Controllers
 {
