@@ -448,6 +448,7 @@ namespace GroupUp.Controllers
             LogOff();
             return View();
         }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)
