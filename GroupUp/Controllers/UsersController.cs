@@ -178,7 +178,7 @@ namespace GroupUp.Controllers
             // if current user has not verified their email, resend verification code.
             if (currentUser != null && currentUser.VerificationCode != null && !currentUser.IsVerified)
             {
-                EmailSender.Send(currentUser.AspNetIdentity.Email, (int) currentUser.VerificationCode);
+                EmailSender.SendVerificationCode(currentUser.AspNetIdentity.Email, (int) currentUser.VerificationCode);
             }
 
             return RedirectToAction("VerifyUser");
@@ -232,7 +232,7 @@ namespace GroupUp.Controllers
             if (currentUser.AspNetIdentity.Email != viewModel.Email && !currentUser.IsVerified)
             {
                 if (currentUser.VerificationCode != null)
-                    EmailSender.Send(viewModel.Email, (int) currentUser.VerificationCode);
+                    EmailSender.SendVerificationCode(viewModel.Email, (int) currentUser.VerificationCode);
             }
             currentUser.AspNetIdentity.Email = viewModel.Email;
             _context.SaveChanges();

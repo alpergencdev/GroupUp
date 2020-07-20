@@ -16,15 +16,17 @@ namespace GroupUp.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
+        private readonly ApplicationDbContext _context;
         public AccountController()
         {
+            _context = new ApplicationDbContext();
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            _context = new ApplicationDbContext();
         }
 
         public ApplicationSignInManager SignInManager
@@ -171,7 +173,7 @@ namespace GroupUp.Controllers
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    EmailSender.Send(model.Email, (int) userObject.VerificationCode);
+                    EmailSender.SendVerificationCode(model.Email, (int) userObject.VerificationCode);
                     await UserManager.AddToRoleAsync(user.Id, "SecurityLevel0");
                     // Hesap onayını ve parola sıfırlamayı etkinleştirme hakkında daha fazla bilgi için lütfen https://go.microsoft.com/fwlink/?LinkID=320771 adresini ziyaret edin.
                     // Bu bağlantı ile bir e-posta yollayın
@@ -218,22 +220,24 @@ namespace GroupUp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                var user = _context.Users.Select(u => u.AspNetIdentity)
+                    .SingleOrDefault(a => a.Email == model.Email);
+                if (user == null)
                 {
-                    // Kullanıcının mevcut olmadığını veya onaylanmadığını gösterme
+                    // To show that user does not exist
                     return View("ForgotPasswordConfirmation");
                 }
 
-                // Hesap onayını ve parola sıfırlamayı etkinleştirme hakkında daha fazla bilgi için lütfen https://go.microsoft.com/fwlink/?LinkID=320771 adresini ziyaret edin.
-                // Bu bağlantı ile bir e-posta yollayın
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Parola Sıfırlama", "Lütfen parolanızı sıfırlamak için <a href=\"" + callbackUrl + "\">buraya tıklayın</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                if (!EmailSender.SendPasswordResetLink(user.Email, callbackUrl))
+                {
+                    return HttpNotFound();
+                }
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
-            // İşlemde bu kadar ilerlendiyse, hata oluşmuş demektir, formu yeniden görüntüleyin
+            // Processing this return statement below means that an error has occurred, display form again.
             return View(model);
         }
 
@@ -264,10 +268,10 @@ namespace GroupUp.Controllers
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = _context.Users.Select(u => u.AspNetIdentity).SingleOrDefault(a => a.Email == model.Email);
             if (user == null)
             {
-                // Kullanıcının mevcut olmadığını gösterme
+                // Show that user is null.
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
             var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);

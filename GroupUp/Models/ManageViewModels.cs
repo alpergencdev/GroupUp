@@ -65,19 +65,19 @@ namespace GroupUp.Models
     {
         [Required]
         [Phone]
-        [Display(Name = "Telefon Numarası")]
+        [Display(Name = "Phone Number")]
         public string Number { get; set; }
     }
 
     public class VerifyPhoneNumberViewModel
     {
         [Required]
-        [Display(Name = "Kod")]
+        [Display(Name = "Code")]
         public string Code { get; set; }
 
         [Required]
         [Phone]
-        [Display(Name = "Telefon Numarası")]
+        [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
     }
 

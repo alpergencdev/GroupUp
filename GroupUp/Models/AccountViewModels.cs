@@ -6,7 +6,7 @@ namespace GroupUp.Models
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
-        [Display(Name = "E-posta")]
+        [Display(Name = "E-mail")]
         public string Email { get; set; }
     }
 
@@ -33,7 +33,7 @@ namespace GroupUp.Models
         public string Code { get; set; }
         public string ReturnUrl { get; set; }
 
-        [Display(Name = "Bu tarayıcı hatırlansın mı?")]
+        [Display(Name = "Should this browser be remembered?")]
         public bool RememberBrowser { get; set; }
 
         public bool RememberMe { get; set; }
@@ -42,7 +42,7 @@ namespace GroupUp.Models
     public class ForgotViewModel
     {
         [Required]
-        [Display(Name = "E-posta")]
+        [Display(Name = "E-mail")]
         public string Email { get; set; }
     }
 
@@ -76,7 +76,7 @@ namespace GroupUp.Models
 
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "Password and confirmation passwords are not the same.")]
+        [Compare("Password", ErrorMessage = "Password and confirmation passwords do not match.")]
         public string ConfirmPassword { get; set; }
 
         [Required]
@@ -88,18 +88,18 @@ namespace GroupUp.Models
     {
         [Required]
         [EmailAddress]
-        [Display(Name = "E-posta")]
+        [Display(Name = "E-mail")]
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "{0} en az {2} karakter uzunluğunda olmalıdır.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "{0} should at least be {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Parola")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Parolayı onayla")]
-        [Compare("Password", ErrorMessage = "Parola ve onay parolası eşleşmiyor.")]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "Password and confirm passwords do not match.")]
         public string ConfirmPassword { get; set; }
 
         public string Code { get; set; }
@@ -109,7 +109,7 @@ namespace GroupUp.Models
     {
         [Required]
         [EmailAddress]
-        [Display(Name = "E-posta")]
+        [Display(Name = "E-mail")]
         public string Email { get; set; }
     }
 }
