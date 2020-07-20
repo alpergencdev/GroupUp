@@ -87,7 +87,7 @@ namespace GroupUp.Controllers
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Geçersiz oturum açma girişimi.");
+                    ModelState.AddModelError("", "Invalid login attempt.");
                     return View(model);
             }
         }
@@ -130,7 +130,7 @@ namespace GroupUp.Controllers
                     return View("Lockout");
                 case SignInStatus.Failure:
                 default:
-                    ModelState.AddModelError("", "Geçersiz kod.");
+                    ModelState.AddModelError("", "Invalid code.");
                     return View(model);
             }
         }
@@ -474,7 +474,7 @@ namespace GroupUp.Controllers
         }
 
 
-        #region Yardımcılar
+        #region Helpers
         // Dışarıdan oturum açma sağlayıcıları eklerken XSRF koruması için kullanılır
         private const string XsrfKey = "XsrfId";
 

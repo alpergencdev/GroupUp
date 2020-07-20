@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -60,10 +59,10 @@ namespace GroupUp.Controllers
             ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password is changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password is set."
-                : message == ManageMessageId.SetTwoFactorSuccess ? "İki öğeli kimlik doğrulama sağlayıcısı ayarlandı."
+                : message == ManageMessageId.SetTwoFactorSuccess ? "Two factor authentication set."
                 : message == ManageMessageId.Error ? "An error has occurred."
-                : message == ManageMessageId.AddPhoneSuccess ? "Telefon numaranız eklendi."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Telefon numaranız kaldırıldı."
+                : message == ManageMessageId.AddPhoneSuccess ? "Phone number added."
+                : message == ManageMessageId.RemovePhoneSuccess ? "Phone number removed."
                 : "";
 
             var userId = User.Identity.GetUserId();
@@ -129,7 +128,7 @@ namespace GroupUp.Controllers
                 var message = new IdentityMessage
                 {
                     Destination = model.Number,
-                    Body = "Güvenlik kodunuz: " + code
+                    Body = "Your security code: " + code
                 };
                 await UserManager.SmsService.SendAsync(message);
             }
@@ -287,8 +286,8 @@ namespace GroupUp.Controllers
         public async Task<ActionResult> ManageLogins(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
-                message == ManageMessageId.RemoveLoginSuccess ? "Dış oturum kaldırıldı."
-                : message == ManageMessageId.Error ? "Hata oluştu."
+                message == ManageMessageId.RemoveLoginSuccess ? "External login removed."
+                : message == ManageMessageId.Error ? "An error has occurred."
                 : "";
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
             if (user == null)
