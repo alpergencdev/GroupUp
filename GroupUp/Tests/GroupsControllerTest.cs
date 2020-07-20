@@ -23,6 +23,7 @@ namespace GroupUp.Tests
 
             var contextMock = new Mock<ApplicationDbContext>() {CallBase = true};
             contextMock.Setup(c => c.SaveChanges()).Returns(1);
+
             var controller = new GroupsController
             {
                 ControllerContext = controllerContextMock.Object,
