@@ -48,7 +48,7 @@ namespace GroupUp.Controllers
             }
             // get which screen to show. If the group is closed, show closeddetails.
             
-            if (targetGroup != null && targetGroup.IsClosed)
+            if ( targetGroup.IsClosed)
             {
                 return RedirectToAction("ClosedDetails", new {groupId = targetGroup.GroupId});
             }
@@ -58,12 +58,12 @@ namespace GroupUp.Controllers
                 User = currentUser
             };
             // if current user is the creator of the desired group, show creator details.
-            if (targetGroup != null && targetGroup.Creator == currentUser)
+            if ( targetGroup.Creator == currentUser)
             {
                 return View("CreatorDetails", gvm);
             }
             // if current user is a member of the desired group, show member details.
-            if (targetGroup != null && targetGroup.Members.Contains(currentUser))
+            if ( targetGroup.Members.Contains(currentUser))
             {
                 return View("MemberDetails", gvm);
             }

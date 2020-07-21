@@ -1,24 +1,39 @@
 ﻿using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
+using Antlr.Runtime.Misc;
 using GroupUp.Models;
 using GroupUp.ViewModels;
 using Microsoft.AspNet.Identity;
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+// ReSharper disable ConvertToAutoPropertyWhenPossible
 
 namespace GroupUp.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+
+        public ApplicationDbContext Context
+        {
+            get => _context;
+
+            set => _context = value;
+        }
+
+        public Func<string> GetUserId;
+
+        private ApplicationDbContext _context;
         public UsersController()
         {
             _context = new ApplicationDbContext();
+            GetUserId = () => User.Identity.GetUserId();
         }
+
         
         [Authorize(Roles="SecurityLevel1")]
         public ActionResult Details(int userId)
         {
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.Groups).SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 
             var targetUser = _context.Users.Include(u => u.Groups).Include(u => u.AspNetIdentity).SingleOrDefault(u => u.UserId == userId);
@@ -28,7 +43,16 @@ namespace GroupUp.Controllers
             // if the user with the given ID can not be viewed by the user
             // for any reason, then a corresponding deny message is set and
             // given to the view to show.
-            if (targetUser == null)
+            if (currentUser == null)
+            {
+                viewModel = new UserDetailsViewModel()
+                {
+                    DenyMessage = "You have not logged in.",
+                    UserCanView = false,
+                    User = null
+                };
+            }
+            else if (targetUser == null)
             {
                 viewModel = new UserDetailsViewModel()
                 {
@@ -37,7 +61,7 @@ namespace GroupUp.Controllers
                     User = null
                 };
             }
-            else if (currentUser != null && !currentUser.Groups.Intersect(targetUser.Groups).Any())
+            else if (!currentUser.Groups.Intersect(targetUser.Groups).Any())
             {
                 viewModel = new UserDetailsViewModel()
                 {
@@ -62,7 +86,7 @@ namespace GroupUp.Controllers
         [Authorize]
         public ActionResult VerifyUser()
         {
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             if (currentUser != null && currentUser.IsVerified)
             {
@@ -82,7 +106,7 @@ namespace GroupUp.Controllers
             }
             else
             {
-                var aspNetId = User.Identity.GetUserId();
+                var aspNetId = GetUserId();
                 var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
                 // if currentUser is null, or the given verification code does not match, return the user to the verification screen.
                 if (currentUser == null)
@@ -103,14 +127,13 @@ namespace GroupUp.Controllers
                     return RedirectToAction("UserGroups", "Groups");
                 }
                 return RedirectToAction("UserGroups", "Groups");
-
             }
         }
 
         [Authorize]
         public ActionResult IncreaseSecurityLevel()
         {
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             var viewModel = new ISLViewModel()
@@ -122,7 +145,7 @@ namespace GroupUp.Controllers
 
         public ActionResult IncreaseSecurityLevelTo1()
         {
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 
@@ -130,9 +153,9 @@ namespace GroupUp.Controllers
             {
                 return HttpNotFound();
             }
-            if (currentUser.SecurityLevel > 1)
+            if (currentUser.SecurityLevel >= 1)
             {
-                return Content("Your security level is higher than 1.");
+                return Content("Your security level is at least 1.");
             }
 
             if (!currentUser.IsVerified)
@@ -147,16 +170,16 @@ namespace GroupUp.Controllers
 
         public ActionResult IncreaseSecurityLevelTo2()
         {
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             if (currentUser == null)
             {
                 return HttpNotFound();
             }
-            if (currentUser.SecurityLevel > 2 )
+            if (currentUser.SecurityLevel >= 2 )
             {
-                return Content("Your security level is higher than 2.");
+                return Content("Your security level is at least 2.");
             }
 
             if (currentUser.TrustPoints < 50)
@@ -173,7 +196,7 @@ namespace GroupUp.Controllers
         [Authorize]
         public ActionResult ResendVerificationEmail()
         {
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity).SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             // if current user has not verified their email, resend verification code.
             if (currentUser != null && currentUser.VerificationCode != null && !currentUser.IsVerified)
@@ -187,7 +210,7 @@ namespace GroupUp.Controllers
         [Authorize]
         public ActionResult Edit()
         {
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 
@@ -217,7 +240,7 @@ namespace GroupUp.Controllers
                 return View("Edit", viewModel);
             }
 
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 

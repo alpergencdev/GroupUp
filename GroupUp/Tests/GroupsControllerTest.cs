@@ -15,13 +15,15 @@ namespace GroupUp.Tests
         [InlineData(-1, "test", "test", 5, "Test", "Test", "Test", true)] // Successful Create Test
         [InlineData(18, "Test", "TestEdit", 5, "Test", "Test", "Test", true)] // Successful Edit Test
         [InlineData(-1, "test", "test", 1, "Test", "Test", "Test", false)] // Unsuccessful Create Test
+        [InlineData(-1, "test", "test", 1, "Test", "-", "Test", false)] // Unsuccessful Create Test #22
         [InlineData(9999, "Test", "TestEdit", 5, "Test", "Test", "Test", false)] // Unsuccessful Edit Test
+        [InlineData(18, "", "TestEdit", 5, "Test", "Test", "Test", false)] // Unsuccessful Edit Test #2
         public void TestSaveGroup(int groupId, string title, string desc, int maxUsers, string city, string country, string continent, bool expectingSuccess)
         {
             var controllerContextMock = new Mock<ControllerContext>() {CallBase = true};
             var contextMock = new Mock<ApplicationDbContext>() {CallBase = true};
             contextMock.Setup(c => c.SaveChanges()).Returns(1);
-
+            
             var controller = new GroupsController
             {
                 ControllerContext = controllerContextMock.Object,
@@ -46,6 +48,7 @@ namespace GroupUp.Tests
             }
             else
             {
+                // check if expected fail is because of model state.
                 var valContext = new ValidationContext(viewModel, null, null);
                 var valResults = new List<ValidationResult>();
                 if (Validator.TryValidateObject(viewModel, valContext, valResults, true))
@@ -55,6 +58,9 @@ namespace GroupUp.Tests
                 }
                 else
                 {
+                    // This means that the passed model was not valid, meaning the system will not successfully save.
+                    // However, ModelState object of the controller does not work properly in unit test cases.
+                    // So, we deem this test a success, as if it had failed.
                     Assert.True(true);
                 }
                 
