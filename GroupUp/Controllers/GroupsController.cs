@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
+using System.Xml.Linq;
 using GroupUp.Models;
 using GroupUp.Models.LocationModels;
 using GroupUp.ViewModels;
@@ -36,9 +37,18 @@ namespace GroupUp.Controllers
             
             var aspNetId = GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
+            if (currentUser == null)
+            {
+                return HttpNotFound();
+            }
             // get target group
             var targetGroup = _context.Groups.Include(g => g.Creator).Include(g => g.Members).Include(g => g.Members.Select( u => u.AspNetIdentity) ).SingleOrDefault(g => g.GroupId == id);
+            if (targetGroup == null)
+            {
+                return HttpNotFound();
+            }
             // get which screen to show. If the group is closed, show closeddetails.
+            
             if (targetGroup != null && targetGroup.IsClosed)
             {
                 return RedirectToAction("ClosedDetails", new {groupId = targetGroup.GroupId});
@@ -317,6 +327,10 @@ namespace GroupUp.Controllers
             var aspNetId = GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 
+            if (currentUser == null)
+            {
+                return HttpNotFound();
+            }
             // a user can only close the group is they are the creator of that group.
             if (targetGroup.Creator != currentUser)
             {
@@ -483,10 +497,23 @@ namespace GroupUp.Controllers
             }
 
             var targetGroup = _context.Groups.Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
+            if (targetGroup == null)
+            {
+                return HttpNotFound();
+            }
             var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
-            targetGroup?.Members.Remove(currentUser);
+
+            if (currentUser == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (!targetGroup.Members.Remove(currentUser))
+            {
+                return HttpNotFound();
+            }
             _context.SaveChanges();
             return RedirectToAction("UserGroups", "Groups");
         }
@@ -537,11 +564,22 @@ namespace GroupUp.Controllers
             var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
-
+            if (targetGroup == null)
+            {
+                return HttpNotFound();
+            }
+            if (currentUser == null)
+            {
+                return HttpNotFound();
+            }
             // user can only kick someone out of the group if they created that group.
-            if (targetGroup != null && (currentUser != null && targetGroup.Creator.UserId == currentUser.UserId))
+            if ( targetGroup.Creator.UserId == currentUser.UserId)
             {
                 var targetUser = _context.Users.SingleOrDefault(u => u.UserId == userId);
+                if (targetUser == null)
+                {
+                    return HttpNotFound();
+                }
                 if (targetGroup.Members.Remove(targetUser))
                 {
                     _context.SaveChanges();
