@@ -167,7 +167,7 @@ namespace GroupUp.Tests
         [InlineData("d4a7548b-6118-4d90-994b-2676dfd5c5bc", 123456, false)] // Unsuccessful PostVerify (Wrong Verification Code)
         [InlineData("", 123456, false)] // Unsuccessful PostVerify (User does not exist)
         [InlineData("de461acf-b411-4361-b127-a1a4eb5708b9", 123456, false)] // Unsuccessful PostVerify (User Already Verified)
-        [InlineData("d4a7548b-6118-4d90-994b-2676dfd5c5bc", 7, false)] // Unsuccessful PostVerify (User Already Verified)
+        [InlineData("d4a7548b-6118-4d90-994b-2676dfd5c5bc", 7, false)] // Unsuccessful PostVerify (ViewModel is not valid)
         public void TestPostVerify(string userAspId, int verificationCode, bool expectingSuccess)
         {
             var controllerContextMock = new Mock<ControllerContext>() { CallBase = true };

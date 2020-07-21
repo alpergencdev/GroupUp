@@ -9,7 +9,13 @@ namespace GroupUp.Controllers
 {
     public class ReportsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+
+        public ApplicationDbContext Context
+        {
+            get => _context;
+            set => _context = value;
+        }
+        private ApplicationDbContext _context;
 
         public ReportsController()
         {

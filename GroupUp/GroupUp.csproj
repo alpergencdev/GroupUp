@@ -424,6 +424,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Tests\GroupsControllerTest.cs" />
+    <Compile Include="Tests\ReportsControllerTest.cs" />
     <Compile Include="Tests\UsersControllerTest.cs" />
     <Compile Include="ViewModels\ClosedGroupViewModel.cs" />
     <Compile Include="ViewModels\CreateGroupViewModel.cs" />
