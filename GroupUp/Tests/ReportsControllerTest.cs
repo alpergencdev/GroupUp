@@ -105,5 +105,58 @@ namespace GroupUp.Tests
                 }
             }
         }
+
+        [Theory]
+        [InlineData(19, true)] // Successful ReportGroup
+        [InlineData(-1, false)] // Unsuccessful ReportGroup
+        public void TestReportGroup(int groupId, bool expectingSuccess)
+        {
+            var controllerContextMock = new Mock<ControllerContext>() { CallBase = true };
+            var contextMock = new Mock<ApplicationDbContext>() { CallBase = true };
+            contextMock.Setup(c => c.SaveChanges()).Returns(1);
+
+            var controller = new ReportsController
+            {
+                ControllerContext = controllerContextMock.Object,
+                Context = contextMock.Object
+            };
+
+            var result = controller.ReportGroup(groupId);
+            if (expectingSuccess)
+            {
+                Assert.True(result is ViewResult);
+            }
+            else
+            {
+                Assert.True(result is HttpNotFoundResult);
+            }
+        }
+
+        [Theory]
+        [InlineData("e48d6b01-3dc8-4f11-a86c-c35affb09c0c", 30, true)] // Successful ReportUser
+        [InlineData("e48d6b01-3dc8-4f11-a86c-c35affb09c0c", -1, false)] // Unsuccessful ReportUser
+        public void TestReportUser(string userAspId, int targetUserId, bool expectingSuccess)
+        {
+            var controllerContextMock = new Mock<ControllerContext>() { CallBase = true };
+            var contextMock = new Mock<ApplicationDbContext>() { CallBase = true };
+            contextMock.Setup(c => c.SaveChanges()).Returns(1);
+
+            var controller = new ReportsController
+            {
+                ControllerContext = controllerContextMock.Object,
+                Context = contextMock.Object,
+                GetUserId = () => userAspId
+            };
+
+            var result = controller.ReportUser(targetUserId);
+            if (expectingSuccess)
+            {
+                Assert.True(result is ViewResult);
+            }
+            else
+            {
+                Assert.True(result is HttpNotFoundResult);
+            }
+        }
     }
 }

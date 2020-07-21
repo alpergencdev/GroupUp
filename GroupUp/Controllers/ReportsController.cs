@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using GroupUp.Models;
@@ -15,11 +16,14 @@ namespace GroupUp.Controllers
             get => _context;
             set => _context = value;
         }
+
+        public Func<string> GetUserId;
         private ApplicationDbContext _context;
 
         public ReportsController()
         {
             _context = new ApplicationDbContext();
+            GetUserId = () => User.Identity.GetUserId();
         }
         [Authorize]
         public ActionResult ReportUser(int? userId)
@@ -33,7 +37,7 @@ namespace GroupUp.Controllers
             {
                 return HttpNotFound();
             }
-            if (targetUser.AspNetIdentity.Id == User.Identity.GetUserId())
+            if (targetUser.AspNetIdentity.Id == GetUserId())
             {
                 return HttpNotFound();
             }
