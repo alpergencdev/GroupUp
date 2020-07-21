@@ -123,6 +123,7 @@ namespace GroupUp.Controllers
             // else, edit the group entry in the database accordingly.
             else
             {
+                
                 var groupInDb = _context.Groups.SingleOrDefault(g => g.GroupId == viewModel.GroupId);
                 if (groupInDb == null)
                 {

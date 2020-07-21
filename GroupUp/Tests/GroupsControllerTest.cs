@@ -1,21 +1,25 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Eventing.Reader;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using GroupUp.Controllers;
 using GroupUp.Models;
 using GroupUp.ViewModels;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Xunit;
 
 namespace GroupUp.Tests
 {
-    [TestClass]
     public class GroupsControllerTest
     {
-        [TestMethod]
-        public void TestSaveGroup()
+        [Theory]
+        [InlineData(-1, "test", "test", 5, "Test", "Test", "Test", true)] // Successful Create Test
+        [InlineData(18, "Test", "TestEdit", 5, "Test", "Test", "Test", true)] // Successful Edit Test
+        [InlineData(-1, "test", "test", 1, "Test", "Test", "Test", false)] // Unsuccessful Create Test
+        [InlineData(9999, "Test", "TestEdit", 5, "Test", "Test", "Test", false)] // Unsuccessful Edit Test
+        public void TestSaveGroup(int groupId, string title, string desc, int maxUsers, string city, string country, string continent, bool expectingSuccess)
         {
             string UserName = "rolestest";
             var controllerContextMock = new Mock<ControllerContext>();
@@ -35,16 +39,34 @@ namespace GroupUp.Tests
 
             var viewModel = new CreateGroupViewModel()
             {
-                City = "Test",
-                Country = "Test",
-                Continent = "Test",
-                GroupId = -1,
-                DetailedDescription = "hope this works",
-                MaxUserCapacity = 5,
-                Title = "automated test"
+                City = city,
+                Country = country,
+                Continent = continent,
+                GroupId = groupId,
+                DetailedDescription = desc,
+                MaxUserCapacity = maxUsers,
+                Title = title
             };
-            var result = (RedirectToRouteResult) controller.Save(viewModel);
-            Assert.AreEqual("UserGroups", result.RouteValues["action"]);
+            if (expectingSuccess)
+            {
+                var result = (RedirectToRouteResult)controller.Save(viewModel);
+                Assert.Equal("UserGroups", result.RouteValues["action"]);
+            }
+            else
+            {
+                var valContext = new ValidationContext(viewModel, null, null);
+                var valResults = new List<ValidationResult>();
+                if (Validator.TryValidateObject(viewModel, valContext, valResults, true))
+                {
+                    var result = controller.Save(viewModel);
+                    Assert.True(result is HttpNotFoundResult);
+                }
+                else
+                {
+                    Assert.True(true);
+                }
+                
+            }
         }
     }
 
