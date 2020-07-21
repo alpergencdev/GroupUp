@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -20,16 +21,20 @@ namespace GroupUp.Controllers
             set => _context = value;
         }
         private ApplicationDbContext _context;
+        public Func<string> GetUserId;
+
         public GroupsController()
         {
             _context = new ApplicationDbContext();
+            GetUserId = () => User.Identity.GetUserId();
         }
+
         // GET: Groups
         [Authorize]
         public ActionResult Details(int id)
         {
             
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             // get target group
             var targetGroup = _context.Groups.Include(g => g.Creator).Include(g => g.Members).Include(g => g.Members.Select( u => u.AspNetIdentity) ).SingleOrDefault(g => g.GroupId == id);
@@ -86,7 +91,7 @@ namespace GroupUp.Controllers
         [HttpPost]
         public ActionResult Save(CreateGroupViewModel viewModel)
         {
-            string aspUserId = User.Identity.GetUserId();
+            string aspUserId = GetUserId();
             var user = _context.Users.Include(u => u.AspNetIdentity).SingleOrDefault(u => u.AspNetIdentity.Id == aspUserId);
             // return back to the screen that posted this request, depending on whether this was an edit or create request.
             if (!ModelState.IsValid)
@@ -137,6 +142,8 @@ namespace GroupUp.Controllers
             return RedirectToAction("UserGroups", "Groups");
         }
 
+        
+
         [Authorize]
         public ActionResult Requests()
         {
@@ -147,7 +154,7 @@ namespace GroupUp.Controllers
                 return RedirectToAction("GetLocation", new {returnAction = "Requests"});
             }
 
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             var groupsToShow = _context.Groups.Include(g => g.Members)
                 .Where(g => g.Members.Count < g.MaxUserCapacity && !g.IsClosed).ToList();
@@ -168,7 +175,7 @@ namespace GroupUp.Controllers
             {
                 return HttpNotFound();
             }
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.Groups)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 
@@ -209,7 +216,7 @@ namespace GroupUp.Controllers
         [Authorize]
         public ActionResult UserGroups()
         {
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.Groups)
                 .SingleOrDefault( u => u.AspNetIdentity.Id == aspNetId);
 
@@ -307,7 +314,7 @@ namespace GroupUp.Controllers
                 return HttpNotFound();
             }
 
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 
             // a user can only close the group is they are the creator of that group.
@@ -352,7 +359,7 @@ namespace GroupUp.Controllers
                 .Include(cg => cg.Group.Members.Select(u => u.AspNetIdentity))
                 .SingleOrDefault(cg => cg.Group.GroupId == groupId);
 
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             if (closedGroupEntry == null)
@@ -377,7 +384,7 @@ namespace GroupUp.Controllers
                 return HttpNotFound();
             }
 
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .Include( g=> g.Groups)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
@@ -451,7 +458,7 @@ namespace GroupUp.Controllers
                     .Include(cg => cg.RatedUsers)
                     .SingleOrDefault(cg => cg.Group.GroupId == viewModel.GroupId);
 
-                var aspNetId = User.Identity.GetUserId();
+                var aspNetId = GetUserId();
                 var currentUser = _context.Users.SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
                 if (currentUser == null || closedGroup == null)
                 {
@@ -476,7 +483,7 @@ namespace GroupUp.Controllers
             }
 
             var targetGroup = _context.Groups.Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
             targetGroup?.Members.Remove(currentUser);
@@ -495,7 +502,7 @@ namespace GroupUp.Controllers
 
             var targetGroup = _context.Groups.Include(g => g.Creator)
                 .Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 
@@ -527,7 +534,7 @@ namespace GroupUp.Controllers
 
             var targetGroup = _context.Groups.Include(g => g.Creator)
                 .Include(g => g.Members).SingleOrDefault(g => g.GroupId == groupId);
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users.Include(u => u.AspNetIdentity)
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 
