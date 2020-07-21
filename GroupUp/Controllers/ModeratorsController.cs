@@ -12,11 +12,19 @@ namespace GroupUp.Controllers
     [Authorize(Roles="Moderator")]
     public class ModeratorsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        public Func<string> GetUserId;
+
+        public ApplicationDbContext Context
+        {
+            get => _context;
+            set => _context = value;
+        }
+        private ApplicationDbContext _context;
 
         public ModeratorsController()
         {
             _context = new ApplicationDbContext();
+            GetUserId = () => User.Identity.GetUserId();
         }
         // GET: Moderators
         public ActionResult Index()
@@ -217,7 +225,7 @@ namespace GroupUp.Controllers
 
         public ActionResult UserReports()
         {
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUserId = _context.Users
                 .Where(u => u.AspNetIdentity.Id == aspNetId)
                 .Select(u => u.UserId)
@@ -285,7 +293,7 @@ namespace GroupUp.Controllers
 
         public ActionResult GroupReports()
         {
-            var aspNetId = User.Identity.GetUserId();
+            var aspNetId = GetUserId();
             var currentUser = _context.Users
                 .SingleOrDefault(u => u.AspNetIdentity.Id == aspNetId);
 
