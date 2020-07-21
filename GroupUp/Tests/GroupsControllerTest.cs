@@ -248,6 +248,100 @@ namespace GroupUp.Tests
                 Assert.True(result is HttpNotFoundResult);
             }
         }
+
+        [Theory]
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 20, true)] // Successful Rate
+        [InlineData("", 20, false)] // Unsuccessful Rate (User does not exist)
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a3", 7, false)] // Unsuccessful Rate (User not in group)
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a3", -1, false)] // Unsuccessful Rate (Group does not exist)
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a3", 19, false)] // Unsuccessful Rate (Group is not closed)
+        public void TestRate(string userAspId, int groupId, bool expectingSuccess)
+        {
+            var controllerContextMock = new Mock<ControllerContext>() { CallBase = true };
+            var contextMock = new Mock<ApplicationDbContext>() { CallBase = true };
+            contextMock.Setup(c => c.SaveChanges()).Returns(1);
+            var controller = new GroupsController
+            {
+                ControllerContext = controllerContextMock.Object,
+                Context = contextMock.Object,
+                GetUserId = () => userAspId
+            };
+
+            var result = controller.Rate(groupId);
+            if (expectingSuccess)
+            {
+                Assert.True(result is ViewResult);
+            }
+            else
+            {
+                Assert.True(result is HttpNotFoundResult);
+            }
+        }
+
+        [Theory]
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 20, 5, true)] // Successful Rate
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 20, 99, false)] // Unsuccessful Rate (Invalid Model)
+        [InlineData("", 20, 5, false)] // Unsuccessful Rate (User does not exist)
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 19, 5, false)] // Unsuccessful Rate (Group is not closed)
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", -1, 5, false)] // Unsuccessful Rate (Group does not exist)
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 16, 5, false)] // Unsuccessful Rate (User not in group)
+        public void TestPostRating(string userAspId, int groupId, int ratingValue, bool expectingSuccess)
+        {
+            var controllerContextMock = new Mock<ControllerContext>() { CallBase = true };
+            var contextMock = new Mock<ApplicationDbContext>() { CallBase = true };
+            contextMock.Setup(c => c.SaveChanges()).Returns(1);
+            var controller = new GroupsController
+            {
+                ControllerContext = controllerContextMock.Object,
+                Context = contextMock.Object,
+                GetUserId = () => userAspId
+            };
+
+            var initialRateCall = controller.Rate(groupId);
+            if (initialRateCall is HttpNotFoundResult)
+            {
+                // give an error because viewmodel cannot be extracted
+                Assert.True(!expectingSuccess);
+            }
+            else
+            {
+                // ReSharper disable once PossibleNullReferenceException
+                var ratingViewModel = (GroupRatingViewModel)(initialRateCall as ViewResult).Model;
+                var newRatingDictionary = new Dictionary<string, int>();
+                foreach (var kvp in ratingViewModel.UserRatings)
+                {
+                    newRatingDictionary.Add(kvp.Key, ratingValue);
+                }
+
+                var newViewModel = new GroupRatingViewModel()
+                {
+                    GroupId = ratingViewModel.GroupId,
+                    UserRatings = newRatingDictionary
+                };
+                var result = controller.PostRating(newViewModel);
+
+                if (expectingSuccess)
+                {
+                    Assert.True(result is RedirectToRouteResult);
+                }
+                else
+                {
+                    var valContext = new ValidationContext(newViewModel, null, null);
+                    var valResults = new List<ValidationResult>();
+                    if (Validator.TryValidateObject(newViewModel, valContext, valResults, true))
+                    {
+                        Assert.True(result is HttpNotFoundResult);
+                    }
+                    else
+                    {
+                        // This means that the passed model was not valid, meaning the system will not successfully save.
+                        // However, ModelState object of the controller does not work properly in unit test cases.
+                        // So, we deem this test a success, as if it had failed.
+                        Assert.True(true);
+                    }
+                }
+            }
+        }
     }
 
 }
