@@ -304,6 +304,11 @@ namespace GroupUp.Controllers
                 return RedirectToAction("ErroneousGeolocation", "Account");
             }
             LocationMethods.ReverseGeocode(lat, lng, ref locationProperties);
+            if (locationProperties == null)
+            { // This means that Google API request failed for some reason.
+                return RedirectToAction("ErroneousGeolocation", "Account");
+            }
+
             Session["Location"] = locationProperties;
             return Content(lat + " " + lng); // does not matter since ReadAction is called by POST inside a JS code.
         }

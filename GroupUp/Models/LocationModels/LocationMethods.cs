@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -25,8 +26,17 @@ namespace GroupUp.Models.LocationModels
             var requestUri =
                 $"https://maps.googleapis.com/maps/api/geocode/json?latlng=" + latString +"," + lngString + "&key=AIzaSyC0UCs6UUsT2AsnSm-EZ9-wGjwAbbrBBI0&language=en&result_type=administrative_area_level_1&country";
             HttpClient client = new HttpClient();
-            // Get response of Google API into a string.
-            var responseString = client.GetStringAsync(requestUri);
+            Task<string> responseString;
+            try
+            {
+                // Get response of Google API into a string.
+                responseString = client.GetStringAsync(requestUri);
+            }
+            catch (HttpRequestException)
+            {
+                locationProperties = null;
+                return;
+            }
 
             // Convert the JSON response of Google API into the Root object defined inside JSONClasses.cs
             Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(responseString.Result);
