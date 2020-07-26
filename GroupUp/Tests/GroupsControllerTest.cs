@@ -193,7 +193,7 @@ namespace GroupUp.Tests
         [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 19, true, false, true, false)] // Successful Details (Creator)
         [InlineData("e48d6b01-3dc8-4f11-a86c-c35affb09c0c", 19, true, false, false, true)] // Successful Details (Member)
         [InlineData("a90916a5-b7be-491c-b20f-66d51abc9a66", 19, true, false, false, false)] // Successful Details (Outsider)
-        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 20, true, true, true, false)] // Successful Details (Closed Group)
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 29, true, true, true, false)] // Successful Details (Closed Group)
         [InlineData("", 19, false, false, false, false)]// Unsuccessful Details (User does not exist)
         [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", -1, false, false, false, false)]// Unsuccessful Details (Group does not exist)
         public void TestGroupDetails(string userAspId, int groupId, bool expectingSuccess, bool isClosed, bool isCreator, bool isRegularMember)
@@ -250,7 +250,7 @@ namespace GroupUp.Tests
         }
 
         [Theory]
-        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 20, true)] // Successful Rate
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 29, true)] // Successful Rate
         [InlineData("", 20, false)] // Unsuccessful Rate (User does not exist)
         [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a3", 7, false)] // Unsuccessful Rate (User not in group)
         [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a3", -1, false)] // Unsuccessful Rate (Group does not exist)
@@ -279,8 +279,8 @@ namespace GroupUp.Tests
         }
 
         [Theory]
-        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 20, 5, true)] // Successful Rate
-        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 20, 99, false)] // Unsuccessful Rate (Invalid Model)
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 29, 5, true)] // Successful Rate
+        [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 29, 99, false)] // Unsuccessful Rate (Invalid Model)
         [InlineData("", 20, 5, false)] // Unsuccessful Rate (User does not exist)
         [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", 19, 5, false)] // Unsuccessful Rate (Group is not closed)
         [InlineData("453a2901-150b-4211-84b1-a40ac2ba4a35", -1, 5, false)] // Unsuccessful Rate (Group does not exist)

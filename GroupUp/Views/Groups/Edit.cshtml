@@ -17,7 +17,7 @@
 
     <div class="form-group">
         @Html.LabelFor(m => m.DetailedDescription)
-        @Html.TextBoxFor(m => m.DetailedDescription, new { @class = "form-control" })
+        @Html.TextAreaFor(m => m.DetailedDescription, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m.DetailedDescription)
     </div>
 

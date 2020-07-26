@@ -198,9 +198,22 @@ namespace GroupUp.Controllers
             // if there are any closed group objects targeting this group object, delete them.
             if (_context.ClosedGroups.Any(cg => cg.Group.GroupId == targetGroup.GroupId))
             {
+                // first remove the ratedusers of the groups to successfully delete the closed groups.
+                var groupsToDelete = _context.ClosedGroups.Include(cg => cg.RatedUsers)
+                    .Where(cg => cg.Group.GroupId == targetGroup.GroupId).ToList();
+
+                foreach (var closedGroup in groupsToDelete)
+                {
+                    
+                    while (closedGroup.RatedUsers.Count > 0)
+                    {
+                        closedGroup.RatedUsers.RemoveAt(0);
+                    }
+                }
                 _context.ClosedGroups.RemoveRange(
                     // ReSharper disable once AssignNullToNotNullAttribute
-                    _context.ClosedGroups.Where(cg => cg.Group.GroupId == targetGroup.GroupId));
+                    _context.ClosedGroups.Where(cg => cg.ClosedGroupId == targetGroup.GroupId));
+                _context.SaveChanges();
             }
 
             // if there are any group report objects targeting this group object, delete them.
@@ -209,12 +222,14 @@ namespace GroupUp.Controllers
                 _context.GroupReports.RemoveRange(
                     // ReSharper disable once AssignNullToNotNullAttribute
                     _context.GroupReports.Where(gr => gr.TargetGroup.GroupId == targetGroup.GroupId));
+                _context.SaveChanges();
             }
 
             // keep removing first item until there are no more members.
             while (targetGroup.Members.Count > 0)
             {
                 targetGroup.Members.RemoveAt(0);
+                _context.SaveChanges();
             }
 
             // finally, delete group from database.
