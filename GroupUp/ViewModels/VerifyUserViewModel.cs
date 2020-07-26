@@ -6,6 +6,7 @@ namespace GroupUp.ViewModels
     {
         [Required]
         [Range(100000, 999999)]
+        [Display(Name="Verification Code")]
         public int VerificationCode { get; set; }
     }
 }

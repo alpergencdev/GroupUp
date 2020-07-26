@@ -298,7 +298,7 @@ namespace GroupUp.Controllers
                 CountryShortName = "-",
                 Continent = "-"
             };
-            // My JS code submits (-1,-1) with this error, so we check for errors below:
+            // My JS code submits (-1,-1) if there is an error, so we check for errors below:
             if( lat == -1 && lng == -1)
             {
                 return RedirectToAction("ErroneousGeolocation", "Account");
