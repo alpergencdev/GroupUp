@@ -29,12 +29,16 @@ namespace GroupUp
             // Call the addNewMessageToPage method to update clients.
             try
             {
-                int roomNo = Int32.Parse(roomName);
-                // first, add the message to the ChatLog of the group.
-                _context.Groups.Single(g => g.GroupId == roomNo).ChatLog += $"<strong>{name}: </strong>{message}\n";
-                _context.SaveChanges();
-                // then, send it to the clients of the group.
-                Clients.Group(roomName).addNewMessageToPage(name, message);
+                // ReSharper disable once InvertIf
+                if (message != "")
+                {
+                    int roomNo = Int32.Parse(roomName);
+                    // first, add the message to the ChatLog of the group.
+                    _context.Groups.Single(g => g.GroupId == roomNo).ChatLog += $"<strong>{name}: </strong>{message}\n";
+                    _context.SaveChanges();
+                    // then, send it to the clients of the group.
+                    Clients.Group(roomName).addNewMessageToPage(name, message);
+                }
             }
             catch (Exception e)
             {

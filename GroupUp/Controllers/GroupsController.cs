@@ -597,5 +597,11 @@ namespace GroupUp.Controllers
         }
     }
 
-   
+    /* class MyFilter : ActionFilterAttribute
+    {
+        public override void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+            base.OnActionExecuted(filterContext);
+        }
+    }*/
 }

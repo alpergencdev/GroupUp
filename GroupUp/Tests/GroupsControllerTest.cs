@@ -15,7 +15,7 @@ namespace GroupUp.Tests
         [InlineData(-1, "test", "test", 5, "Test", "Test", "Test", true)] // Successful Create Test
         [InlineData(18, "Test", "TestEdit", 5, "Test", "Test", "Test", true)] // Successful Edit Test
         [InlineData(-1, "test", "test", 1, "Test", "Test", "Test", false)] // Unsuccessful Create Test
-        [InlineData(-1, "test", "test", 1, "Test", "-", "Test", false)] // Unsuccessful Create Test #22
+        [InlineData(-1, "test", "test", 1, "Test", "-", "Test", false)] // Unsuccessful Create Test #2
         [InlineData(9999, "Test", "TestEdit", 5, "Test", "Test", "Test", false)] // Unsuccessful Edit Test
         [InlineData(18, "", "TestEdit", 5, "Test", "Test", "Test", false)] // Unsuccessful Edit Test #2
         public void TestSaveGroup(int groupId, string title, string desc, int maxUsers, string city, string country, string continent, bool expectingSuccess)
