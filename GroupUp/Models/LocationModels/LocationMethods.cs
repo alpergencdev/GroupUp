@@ -24,7 +24,7 @@ namespace GroupUp.Models.LocationModels
             var lngString = lng.ToString(CultureInfo.CreateSpecificCulture("en"));
             // construct request uri to send to Google API.
             var requestUri =
-                $"https://maps.googleapis.com/maps/api/geocode/json?latlng=" + latString +"," + lngString + "&key=AIzaSyC0UCs6UUsT2AsnSm-EZ9-wGjwAbbrBBI0&language=en&result_type=administrative_area_level_1&country";
+                $"https://maps.googleapis.com/maps/api/geocode/json?latlng=" + latString +"," + lngString + "&key=GOOGLE API KEY&language=en&result_type=administrative_area_level_1&country";
             HttpClient client = new HttpClient();
             Task<string> responseString;
             try
